@@ -9,6 +9,6 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
-    "@zosma-qa/playwright": "workspace:*"
+    "@zosmaai/zosma-qa-playwright": "workspace:*"
   }
 }

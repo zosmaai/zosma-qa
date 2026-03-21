@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import chalk from 'chalk';
 import { select } from '@inquirer/prompts';
-import type { AgentLoop } from '@zosma-qa/core';
+import type { AgentLoop } from '@zosmaai/zosma-qa-core';
 
 /**
  * `zosma-qa agents init` — prompts the user to choose their AI coding tool

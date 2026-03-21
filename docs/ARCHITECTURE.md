@@ -22,13 +22,13 @@ zosma-qa/
 ## Package Dependency Graph
 
 ```
-@zosma-qa/cli
-  ├── @zosma-qa/core
-  └── @zosma-qa/playwright
-        └── @zosma-qa/core
+@zosmaai/zosma-qa-cli
+  ├── @zosmaai/zosma-qa-core
+  └── @zosmaai/zosma-qa-playwright
+        └── @zosmaai/zosma-qa-core
 ```
 
-`@playwright/test` is a **peer dependency** of `@zosma-qa/playwright` — users supply their own version, ensuring they can upgrade Playwright independently.
+`@playwright/test` is a **peer dependency** of `@zosmaai/zosma-qa-playwright` — users supply their own version, ensuring they can upgrade Playwright independently.
 
 ---
 
@@ -112,7 +112,7 @@ Two layers, both optional:
 
 ```
 zosma.config.ts        — top-level: plugins, testDir, baseURL, browsers
-playwright.config.ts   — Playwright-specific: extends @zosma-qa/playwright base config
+playwright.config.ts   — Playwright-specific: extends @zosmaai/zosma-qa-playwright base config
 ```
 
 Config lookup order (both files):
@@ -142,7 +142,7 @@ The `init` command scaffolds this structure and optionally runs `playwright init
 
 ## Test Discovery
 
-`@zosma-qa/core`'s `findTestFiles()` walks `testDir` recursively and returns files matching:
+`@zosmaai/zosma-qa-core`'s `findTestFiles()` walks `testDir` recursively and returns files matching:
 - `*.spec.ts`, `*.test.ts`
 - `*.spec.js`, `*.test.js`
 
@@ -153,7 +153,7 @@ Ignored directories: `node_modules`, `dist`, `.git`, `.playwright`, `playwright-
 ## Adding a New Runner Plugin (Future)
 
 1. Create `packages/<runner>/` with a `package.json`
-2. Implement `ZosmaPlugin` from `@zosma-qa/core`
+2. Implement `ZosmaPlugin` from `@zosmaai/zosma-qa-core`
 3. Export from the package index
 4. Add the runner name to `zosma.config.ts`'s `plugins` array
 5. The CLI's `run` command will pick it up
@@ -161,7 +161,7 @@ Ignored directories: `node_modules`, `dist`, `.git`, `.playwright`, `playwright-
 Example skeleton:
 
 ```typescript
-import type { ZosmaPlugin, RunnerConfig, TestResult } from '@zosma-qa/core';
+import type { ZosmaPlugin, RunnerConfig, TestResult } from '@zosmaai/zosma-qa-core';
 
 export class K6Runner implements ZosmaPlugin {
   readonly name = 'k6';

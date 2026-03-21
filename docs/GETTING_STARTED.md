@@ -94,14 +94,14 @@ npx zosma-qa report
 ## Option B — Install as a package in your own project
 
 ```bash
-npm install -D @zosma-qa/playwright @zosma-qa/cli @playwright/test
+npm install -D @zosmaai/zosma-qa-playwright @zosmaai/zosma-qa-cli @playwright/test
 npx playwright install
 ```
 
 Create `playwright.config.ts`:
 
 ```typescript
-import { defineConfig } from '@zosma-qa/playwright';
+import { defineConfig } from '@zosmaai/zosma-qa-playwright';
 
 export default defineConfig({
   use: {

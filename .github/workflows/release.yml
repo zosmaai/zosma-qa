@@ -34,19 +34,19 @@ jobs:
       - name: Build all packages
         run: pnpm build
 
-      - name: Publish @zosma-qa/core
+      - name: Publish @zosmaai/zosma-qa-core
         run: pnpm publish --access public --no-git-checks
         working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish @zosma-qa/playwright
+      - name: Publish @zosmaai/zosma-qa-playwright
         run: pnpm publish --access public --no-git-checks
         working-directory: packages/playwright
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish @zosma-qa/cli
+      - name: Publish @zosmaai/zosma-qa-cli
         run: pnpm publish --access public --no-git-checks
         working-directory: packages/cli
         env:

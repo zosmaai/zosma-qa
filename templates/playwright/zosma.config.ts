@@ -1,4 +1,4 @@
-import { defineConfig } from '@zosma-qa/core';
+import { defineConfig } from '@zosmaai/zosma-qa-core';
 
 /**
  * zosma-qa configuration.

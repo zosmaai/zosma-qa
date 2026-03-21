@@ -1,5 +1,5 @@
 {
-  "name": "@zosma-qa/playwright",
+  "name": "@zosmaai/zosma-qa-playwright",
   "version": "0.1.0",
   "description": "Playwright runner and base config for zosma-qa",
   "license": "Apache-2.0",
@@ -12,7 +12,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@zosma-qa/core": "workspace:*"
+    "@zosmaai/zosma-qa-core": "workspace:*"
   },
   "peerDependencies": {
     "@playwright/test": ">=1.50.0"

@@ -1,5 +1,5 @@
 {
-  "name": "@zosma-qa/core",
+  "name": "@zosmaai/zosma-qa-core",
   "version": "0.1.0",
   "description": "Core types, config loader, and plugin interface for zosma-qa",
   "license": "Apache-2.0",

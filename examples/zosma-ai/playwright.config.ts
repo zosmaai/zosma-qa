@@ -1,4 +1,4 @@
-import { defineConfig } from '@zosma-qa/playwright';
+import { defineConfig } from '@zosmaai/zosma-qa-playwright';
 
 /**
  * Playwright config for the zosma.ai example test suite.

@@ -26,7 +26,7 @@ export interface ZosmaConfig {
 
 /**
  * Plugin interface — every test runner must implement this.
- * Future plugins: @zosma-qa/k6, @zosma-qa/artillery, @zosma-qa/rest
+ * Future plugins: @zosmaai/zosma-qa-k6, @zosmaai/zosma-qa-artillery, @zosmaai/zosma-qa-rest
  */
 export interface ZosmaPlugin {
   /** Unique plugin identifier, e.g. 'playwright' */

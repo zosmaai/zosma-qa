@@ -32,7 +32,7 @@ importers:
       '@playwright/test':
         specifier: ^1.52.0
         version: 1.58.2
-      '@zosma-qa/playwright':
+      '@zosmaai/zosma-qa-playwright':
         specifier: workspace:*
         version: link:../../packages/playwright
 
@@ -41,10 +41,10 @@ importers:
       '@inquirer/prompts':
         specifier: ^7.0.0
         version: 7.10.1(@types/node@20.19.37)
-      '@zosma-qa/core':
+      '@zosmaai/zosma-qa-core':
         specifier: workspace:*
         version: link:../core
-      '@zosma-qa/playwright':
+      '@zosmaai/zosma-qa-playwright':
         specifier: workspace:*
         version: link:../playwright
       chalk:
@@ -75,7 +75,7 @@ importers:
 
   packages/playwright:
     dependencies:
-      '@zosma-qa/core':
+      '@zosmaai/zosma-qa-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:

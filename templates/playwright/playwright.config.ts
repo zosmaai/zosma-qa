@@ -1,4 +1,4 @@
-import { defineConfig } from '@zosma-qa/playwright';
+import { defineConfig } from '@zosmaai/zosma-qa-playwright';
 
 /**
  * Playwright configuration — extends zosma-qa's best-practice defaults.

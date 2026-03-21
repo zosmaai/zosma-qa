@@ -12,7 +12,7 @@ const DEFAULTS: ZosmaConfig = {
  *
  * @example
  * // zosma.config.ts
- * import { defineConfig } from '@zosma-qa/core';
+ * import { defineConfig } from '@zosmaai/zosma-qa-core';
  * export default defineConfig({
  *   baseURL: 'https://www.myapp.com',
  *   browsers: ['chromium', 'firefox'],

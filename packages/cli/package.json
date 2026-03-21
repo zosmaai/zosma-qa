@@ -1,5 +1,5 @@
 {
-  "name": "@zosma-qa/cli",
+  "name": "@zosmaai/zosma-qa-cli",
   "version": "0.1.0",
   "description": "CLI for zosma-qa — zero-config QA platform",
   "license": "Apache-2.0",
@@ -15,8 +15,8 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@zosma-qa/core": "workspace:*",
-    "@zosma-qa/playwright": "workspace:*",
+    "@zosmaai/zosma-qa-core": "workspace:*",
+    "@zosmaai/zosma-qa-playwright": "workspace:*",
     "@inquirer/prompts": "^7.0.0",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",

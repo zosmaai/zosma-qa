@@ -43,12 +43,12 @@ npx zosma-qa run
 ### Option B — Use as a base config in your own project
 
 ```bash
-npm install -D @zosma-qa/playwright @playwright/test
+npm install -D @zosmaai/zosma-qa-playwright @playwright/test
 ```
 
 ```typescript
 // playwright.config.ts
-import { defineConfig } from '@zosma-qa/playwright';
+import { defineConfig } from '@zosmaai/zosma-qa-playwright';
 
 export default defineConfig({
   use: { baseURL: 'https://www.myapp.com' },
@@ -152,7 +152,7 @@ Two config files, both optional:
 **`playwright.config.ts`** — Playwright-specific settings:
 
 ```typescript
-import { defineConfig } from '@zosma-qa/playwright';
+import { defineConfig } from '@zosmaai/zosma-qa-playwright';
 
 export default defineConfig({
   use: {
@@ -166,7 +166,7 @@ export default defineConfig({
 **`zosma.config.ts`** — Top-level runner settings:
 
 ```typescript
-import { defineConfig } from '@zosma-qa/core';
+import { defineConfig } from '@zosmaai/zosma-qa-core';
 
 export default defineConfig({
   plugins: ['playwright'], // future: ['k6', 'artillery']
@@ -183,9 +183,9 @@ export default defineConfig({
 ```
 zosma-qa/
 ├── packages/
-│   ├── core/          @zosma-qa/core     — types, config loader, plugin interface
-│   ├── playwright/    @zosma-qa/playwright — base config, runner plugin
-│   └── cli/           @zosma-qa/cli      — `npx zosma-qa` CLI
+│   ├── core/          @zosmaai/zosma-qa-core     — types, config loader, plugin interface
+│   ├── playwright/    @zosmaai/zosma-qa-playwright — base config, runner plugin
+│   └── cli/           @zosmaai/zosma-qa-cli      — `npx zosma-qa` CLI
 ├── templates/playwright/                  — scaffold for `init` command
 ├── examples/zosma-ai/                     — working tests against zosma.ai
 ├── tests/                                 — your tests go here

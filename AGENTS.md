@@ -17,9 +17,9 @@ The project ships three publishable npm packages plus a working example test sui
 ```
 zosma-qa/                          ← pnpm workspace root
 ├── packages/
-│   ├── core/                      ← @zosma-qa/core  (types, config, discovery)
-│   ├── playwright/                ← @zosma-qa/playwright  (runner + base config)
-│   └── cli/                       ← @zosma-qa/cli  (interactive CLI)
+│   ├── core/                      ← @zosmaai/zosma-qa-core  (types, config, discovery)
+│   ├── playwright/                ← @zosmaai/zosma-qa-playwright  (runner + base config)
+│   └── cli/                       ← @zosmaai/zosma-qa-cli  (interactive CLI)
 ├── templates/playwright/          ← scaffold output for `npx zosma-qa init`
 ├── examples/zosma-ai/             ← working example: tests against zosma.ai
 │   ├── playwright.config.ts
@@ -46,13 +46,13 @@ zosma-qa/                          ← pnpm workspace root
 ## Package Dependency Graph
 
 ```
-@zosma-qa/cli
-  ├── @zosma-qa/core
-  └── @zosma-qa/playwright
-        └── @zosma-qa/core
+@zosmaai/zosma-qa-cli
+  ├── @zosmaai/zosma-qa-core
+  └── @zosmaai/zosma-qa-playwright
+        └── @zosmaai/zosma-qa-core
 ```
 
-`@playwright/test` is a **peer dependency** of `@zosma-qa/playwright` — do not add it as a direct dependency.
+`@playwright/test` is a **peer dependency** of `@zosmaai/zosma-qa-playwright` — do not add it as a direct dependency.
 
 ---
 
@@ -106,7 +106,7 @@ Each package also has its own `pnpm build` / `pnpm typecheck` scripts.
 - All source files live under `src/`, compiled output goes to `dist/`
 - `tsconfig.base.json` at the root is extended by every package
 - ESLint config is at `.eslintrc.cjs` — do not add inline `/* eslint-disable */` without a comment explaining why
-- Imports use `@zosma-qa/core` workspace aliases, not relative paths between packages
+- Imports use `@zosmaai/zosma-qa-core` workspace aliases, not relative paths between packages
 
 ### `@inquirer/prompts` — important note
 
@@ -118,11 +118,11 @@ The CLI uses `@inquirer/prompts` (the new modular API). The old `inquirer` + `@t
 
 ```typescript
 // zosma.config.ts — top-level zosma options
-import { defineConfig } from '@zosma-qa/core';
+import { defineConfig } from '@zosmaai/zosma-qa-core';
 export default defineConfig({ baseURL: 'https://example.com', browsers: ['chromium'] });
 
-// playwright.config.ts — extends @zosma-qa/playwright base config
-import { defineConfig } from '@zosma-qa/playwright';
+// playwright.config.ts — extends @zosmaai/zosma-qa-playwright base config
+import { defineConfig } from '@zosmaai/zosma-qa-playwright';
 export default defineConfig({ use: { baseURL: 'https://example.com' } });
 ```
 
@@ -282,16 +282,16 @@ await expect(page.locator('h1').filter({ hasText: /your team/i }).first()).toBeV
 ## Adding a New Runner Plugin (Future)
 
 1. Create `packages/<runner>/` — copy the structure from `packages/playwright/`
-2. Implement `ZosmaPlugin` from `@zosma-qa/core`:
+2. Implement `ZosmaPlugin` from `@zosmaai/zosma-qa-core`:
    ```typescript
-   import type { ZosmaPlugin, RunnerConfig, TestResult } from '@zosma-qa/core';
+   import type { ZosmaPlugin, RunnerConfig, TestResult } from '@zosmaai/zosma-qa-core';
    export class MyRunner implements ZosmaPlugin {
      readonly name = 'my-runner';
      async run(config: RunnerConfig): Promise<TestResult[]> { ... }
    }
    ```
 3. Add to `pnpm-workspace.yaml`
-4. Add to `@zosma-qa/cli`'s dependencies
+4. Add to `@zosmaai/zosma-qa-cli`'s dependencies
 
 ---
 

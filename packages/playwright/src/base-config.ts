@@ -1,5 +1,5 @@
 import { defineConfig as pwDefineConfig, devices, type PlaywrightTestConfig } from '@playwright/test';
-import type { Browser } from '@zosma-qa/core';
+import type { Browser } from '@zosmaai/zosma-qa-core';
 
 /**
  * Extended configuration type that adds zosma-qa's `browsers` shorthand
@@ -36,7 +36,7 @@ const BROWSER_DEVICES: Record<Browser, (typeof devices)[string]> = {
  *
  * @example
  * // playwright.config.ts
- * import { defineConfig } from '@zosma-qa/playwright';
+ * import { defineConfig } from '@zosmaai/zosma-qa-playwright';
  * export default defineConfig({
  *   use: { baseURL: 'https://www.myapp.com' },
  *   browsers: ['chromium', 'firefox'],

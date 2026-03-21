@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 import chalk from 'chalk';
 import ora from 'ora';
 import { input, checkbox, select, confirm } from '@inquirer/prompts';
-import type { Browser, AgentLoop } from '@zosma-qa/core';
+import type { Browser, AgentLoop } from '@zosmaai/zosma-qa-core';
 
 // ─── Template content ─────────────────────────────────────────────────────────
 
@@ -31,7 +31,7 @@ test('seed', async ({ page }) => {
 
 function playwrightConfigTemplate(baseURL: string, browsers: Browser[]): string {
   const browsersJson = JSON.stringify(browsers);
-  return `import { defineConfig } from '@zosma-qa/playwright';
+  return `import { defineConfig } from '@zosmaai/zosma-qa-playwright';
 
 export default defineConfig({
   use: {
@@ -44,7 +44,7 @@ export default defineConfig({
 
 function zosmaConfigTemplate(baseURL: string, browsers: Browser[]): string {
   const browsersJson = JSON.stringify(browsers);
-  return `import { defineConfig } from '@zosma-qa/core';
+  return `import { defineConfig } from '@zosmaai/zosma-qa-core';
 
 export default defineConfig({
   plugins: ['playwright'],

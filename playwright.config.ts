@@ -1,4 +1,4 @@
-import { defineConfig } from '@zosma-qa/playwright';
+import { defineConfig } from '@zosmaai/zosma-qa-playwright';
 
 /**
  * Root Playwright configuration for zosma-qa.
