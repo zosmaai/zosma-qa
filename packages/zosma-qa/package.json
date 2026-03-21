@@ -1,0 +1,30 @@
+{
+  "name": "zosma-qa",
+  "version": "0.1.0",
+  "description": "Zero-config QA platform — Playwright, AI agents, and extensible test runners",
+  "license": "Apache-2.0",
+  "bin": {
+    "zosma-qa": "bin/zosma-qa.js"
+  },
+  "files": ["bin", "README.md"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zosmaai/zosma-qa.git"
+  },
+  "homepage": "https://github.com/zosmaai/zosma-qa#readme",
+  "bugs": {
+    "url": "https://github.com/zosmaai/zosma-qa/issues"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "qa",
+    "e2e",
+    "ai-agents",
+    "test-runner",
+    "zero-config"
+  ],
+  "dependencies": {
+    "@zosmaai/zosma-qa-cli": "workspace:*"
+  }
+}

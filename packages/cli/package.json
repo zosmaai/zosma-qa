@@ -3,6 +3,16 @@
   "version": "0.1.0",
   "description": "CLI for zosma-qa — zero-config QA platform",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zosmaai/zosma-qa.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/zosmaai/zosma-qa#readme",
+  "bugs": {
+    "url": "https://github.com/zosmaai/zosma-qa/issues"
+  },
+  "keywords": ["playwright", "testing", "qa", "e2e", "cli", "zero-config", "ai-agents"],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
