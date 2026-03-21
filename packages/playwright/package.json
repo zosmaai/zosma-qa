@@ -3,6 +3,16 @@
   "version": "0.1.0",
   "description": "Playwright runner and base config for zosma-qa",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zosmaai/zosma-qa.git",
+    "directory": "packages/playwright"
+  },
+  "homepage": "https://github.com/zosmaai/zosma-qa#readme",
+  "bugs": {
+    "url": "https://github.com/zosmaai/zosma-qa/issues"
+  },
+  "keywords": ["playwright", "testing", "qa", "e2e", "zero-config", "base-config"],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
