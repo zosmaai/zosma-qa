@@ -24,8 +24,22 @@ import { test, expect } from '@playwright/test';
  *
  *   Replace the goto() URL with your app's entry point, add auth steps,
  *   or import your custom fixtures — the agents will inherit everything.
+ *
+ * ─── Activate ─────────────────────────────────────────────────────────
+ *
+ *   Set BASE_URL (or update playwright.config.ts) to point at your app.
+ *   The test skips automatically until then to avoid CI failures on a
+ *   freshly cloned repo.
+ *
+ *     BASE_URL=https://myapp.example.com npx zosma-qa run
  */
+
+const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
+const isConfigured = !baseURL.includes('localhost');
+
 test('seed', async ({ page }) => {
+  test.skip(!isConfigured, 'BASE_URL is not configured — set BASE_URL to your app URL to activate this test.');
+
   // Navigate to the app under test.
   // baseURL is set in playwright.config.ts — no need to hardcode it here.
   await page.goto('/');

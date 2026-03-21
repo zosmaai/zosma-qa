@@ -47,50 +47,10 @@ jobs:
             examples/*/node_modules
           key: build-${{ github.sha }}
 
-  # ─── Root tests (user's own tests/ folder) ───────────────────────────────────
-  test-root:
-    name: Root tests
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-
-      - uses: actions/cache/restore@v4
-        with:
-          path: |
-            packages/*/dist
-            node_modules
-            packages/*/node_modules
-            examples/*/node_modules
-          key: build-${{ github.sha }}
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Run tests
-        run: pnpm test
-        env:
-          CI: true
-          BASE_URL: ${{ vars.BASE_URL || 'http://localhost:3000' }}
-
-      - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-report-root
-          path: playwright-report/
-          retention-days: 30
-
   # ─── Example tests (zosma.ai) ────────────────────────────────────────────────
+  # Note: the root tests/ directory is a user template — it points to
+  # localhost:3000 and is only meaningful once a user configures their own app.
+  # This CI only runs the example suite, which targets the live zosma.ai site.
   test-examples:
     name: Example tests (zosma.ai)
     needs: build
