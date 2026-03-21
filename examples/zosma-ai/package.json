@@ -1,0 +1,14 @@
+{
+  "name": "zosma-ai-example",
+  "version": "0.1.0",
+  "description": "Example Playwright tests for zosma.ai — shows the full zosma-qa workflow",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@zosma-qa/playwright": "workspace:*"
+  }
+}

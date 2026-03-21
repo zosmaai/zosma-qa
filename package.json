@@ -1,0 +1,27 @@
+{
+  "name": "zosma-qa",
+  "version": "0.1.0",
+  "description": "Zero-config QA platform with Playwright, AI agents, and extensible test runners",
+  "private": true,
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "playwright test",
+    "test:examples": "playwright test --config examples/zosma-ai/playwright.config.ts",
+    "report": "playwright show-report",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r --if-present clean && rm -rf playwright-report test-results"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.0"
+  }
+}
