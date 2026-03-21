@@ -1,0 +1,36 @@
+services:
+  # ─── Run root tests ──────────────────────────────────────────────────────────
+  tests:
+    build:
+      context: .
+      target: runner
+    volumes:
+      # Mount test files so changes don't require a rebuild
+      - ./tests:/app/tests
+      - ./specs:/app/specs
+      - ./playwright.config.ts:/app/playwright.config.ts
+      - ./zosma.config.ts:/app/zosma.config.ts
+      # Reports are written back to the host
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results
+    environment:
+      - CI=true
+      - BASE_URL=${BASE_URL:-http://host.docker.internal:3000}
+    # Allow the container to reach services on the host machine
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  # ─── Run example tests (zosma.ai) ────────────────────────────────────────────
+  tests-examples:
+    build:
+      context: .
+      target: runner
+    volumes:
+      - ./examples/zosma-ai/tests:/app/examples/zosma-ai/tests
+      - ./examples/zosma-ai/specs:/app/examples/zosma-ai/specs
+      - ./examples/zosma-ai/playwright-report:/app/examples/zosma-ai/playwright-report
+    environment:
+      - CI=true
+    command: pnpm test:examples
+    profiles:
+      - examples

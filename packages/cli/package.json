@@ -1,0 +1,29 @@
+{
+  "name": "@zosma-qa/cli",
+  "version": "0.1.0",
+  "description": "CLI for zosma-qa — zero-config QA platform",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "zosma-qa": "bin/zosma-qa.js"
+  },
+  "files": ["dist", "bin"],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@zosma-qa/core": "workspace:*",
+    "@zosma-qa/playwright": "workspace:*",
+    "@inquirer/prompts": "^7.0.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "ora": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@zosma-qa/playwright",
+  "version": "0.1.0",
+  "description": "Playwright runner and base config for zosma-qa",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@zosma-qa/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@playwright/test": ">=1.50.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
