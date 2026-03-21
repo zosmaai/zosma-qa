@@ -28,6 +28,14 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
+      - name: Set version from tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "Publishing version: $VERSION"
+          pnpm --filter @zosmaai/zosma-qa-core    version "$VERSION" --no-git-tag-version
+          pnpm --filter @zosmaai/zosma-qa-playwright version "$VERSION" --no-git-tag-version
+          pnpm --filter @zosmaai/zosma-qa-cli       version "$VERSION" --no-git-tag-version
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
