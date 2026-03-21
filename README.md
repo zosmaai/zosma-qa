@@ -13,34 +13,45 @@ Drop your tests in. Everything works.
 
 zosma-qa is an open-source QA framework that gives you a production-ready test infrastructure in minutes. It ships with:
 
+- **TypeScript and Python support** — pick your language at init time
 - **Best-practice Playwright config** — retries, traces, screenshots, video, and HTML reports all configured for you
 - **First-class AI agent support** — Playwright's planner, generator, and healer agents work out of the box
 - **Interactive CLI** (`npx zosma-qa`) — init, run, agent setup, and report commands with friendly prompts
-- **Zero boilerplate** — clone the repo, add tests to `tests/`, run
-- **Docker support** — fully reproducible test runs in one command
+- **Zero boilerplate** — run `npx zosma-qa init`, answer a few questions, start writing tests
 - **Extensible plugin architecture** — built for future runners: k6, Artillery, REST, accessibility
 
 ---
 
 ## Quick Start
 
-### Option A — Clone and run (recommended)
-
 ```bash
-git clone https://github.com/zosmaai/zosma-qa.git
-cd zosma-qa
-pnpm install
-npx playwright install
-
-# Configure for your app (interactive)
 npx zosma-qa init
-
-# Add your tests to tests/
-# then run
-npx zosma-qa run
 ```
 
-### Option B — Use as a base config in your own project
+The CLI will ask you:
+
+1. **Project name** — blank to scaffold in the current directory
+2. **Language** — TypeScript or Python
+3. **Base URL** — the URL of the app you want to test
+4. **Browsers** — chromium (default), firefox, webkit
+5. **AI agents** — TypeScript only; choose OpenCode, Claude Code, VS Code, or skip
+
+---
+
+## TypeScript (Playwright)
+
+```bash
+npx zosma-qa init
+# Choose: TypeScript
+
+# Run your tests
+npx zosma-qa run
+
+# Open the HTML report
+npx zosma-qa report
+```
+
+**Use as a base config in your own project:**
 
 ```bash
 npm install -D @zosmaai/zosma-qa-playwright @playwright/test
@@ -58,16 +69,61 @@ export default defineConfig({
 
 ---
 
+## Python (pytest-playwright)
+
+```bash
+npx zosma-qa init
+# Choose: Python
+```
+
+**If [uv](https://docs.astral.sh/uv/) is installed**, `pytest-playwright` is installed automatically. If not, the CLI prints clear setup instructions for both uv and venv+pip.
+
+```bash
+# Download browser binaries
+playwright install
+
+# Run your tests
+npx zosma-qa run        # auto-detects uv.lock and uses `uv run pytest`
+# or directly:
+uv run pytest tests/test_seed.py
+```
+
+**Scaffolded files:**
+
+```
+tests/test_seed.py   ← seed test, uses pytest-playwright's page fixture
+conftest.py          ← shared fixtures placeholder
+pyproject.toml       ← pytest config + pytest-playwright dependency
+zosma.config.ts      ← zosma layer config (plugins: ['pytest'])
+```
+
+**`pyproject.toml` (example):**
+
+```toml
+[project]
+name = "my-project"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = ["pytest-playwright>=0.5.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+base_url = "https://www.myapp.com"
+addopts = "--browser chromium"
+```
+
+---
+
 ## CLI Reference
 
 | Command | Description |
 |---|---|
-| `npx zosma-qa init` | Interactive scaffold — configures baseURL, browsers, and AI agents |
-| `npx zosma-qa run` | Run all tests (delegates to Playwright, all flags forwarded) |
-| `npx zosma-qa run --project firefox` | Run tests in a specific browser |
+| `npx zosma-qa init` | Interactive scaffold — language, baseURL, browsers, AI agents |
+| `npx zosma-qa run` | Run all tests (auto-detects TypeScript or Python) |
 | `npx zosma-qa run --grep "checkout"` | Run tests matching a pattern |
-| `npx zosma-qa run --headed` | Run tests in headed (visible) browser mode |
-| `npx zosma-qa agents init` | Set up Playwright AI agent definitions |
+| `npx zosma-qa run --headed` | Run in headed (visible) browser mode |
+| `npx zosma-qa run --project firefox` | TypeScript only — run a specific browser project |
+| `npx zosma-qa agents init` | Set up Playwright AI agent definitions (TypeScript only) |
 | `npx zosma-qa report` | Open the HTML report in the browser |
 
 ---
@@ -76,7 +132,9 @@ export default defineConfig({
 
 zosma-qa is designed for Playwright's built-in AI agents: **planner**, **generator**, and **healer**.
 
-### Set up
+> **Note:** AI agent scaffolding (`npx playwright init-agents`) is currently TypeScript-only. Python projects can still use AI tools directly with `tests/test_seed.py` as the entry point.
+
+### Set up (TypeScript)
 
 ```bash
 npx zosma-qa agents init
@@ -105,8 +163,9 @@ The agent definitions live in `.github/agents/` and follow Playwright's conventi
 ```
 .github/agents/    ← agent definitions (auto-generated, commit these)
 specs/             ← planner writes .md test plans here
-tests/             ← generator writes .spec.ts files here
-tests/seed.spec.ts ← AI agent entry point (configure this for your app)
+tests/             ← generator writes test files here
+tests/seed.spec.ts ← TypeScript AI agent entry point
+tests/test_seed.py ← Python AI agent entry point
 ```
 
 ---
@@ -130,24 +189,9 @@ pnpm test:examples
 
 ---
 
-## Docker
-
-```bash
-# Run tests in a clean Playwright container
-docker compose up
-
-# Run against a different URL
-BASE_URL=https://staging.myapp.com docker compose up
-
-# Run the zosma.ai examples
-docker compose --profile examples up tests-examples
-```
-
----
-
 ## Configuration
 
-Two config files, both optional:
+### TypeScript projects
 
 **`playwright.config.ts`** — Playwright-specific settings:
 
@@ -159,7 +203,6 @@ export default defineConfig({
     baseURL: process.env.BASE_URL ?? 'http://localhost:3000',
   },
   browsers: ['chromium', 'firefox', 'webkit'],
-  // webServer: { command: 'npm run dev', url: 'http://localhost:3000' }
 });
 ```
 
@@ -169,7 +212,31 @@ export default defineConfig({
 import { defineConfig } from '@zosmaai/zosma-qa-core';
 
 export default defineConfig({
-  plugins: ['playwright'], // future: ['k6', 'artillery']
+  plugins: ['playwright'],
+  testDir: './tests',
+  baseURL: 'http://localhost:3000',
+  browsers: ['chromium'],
+});
+```
+
+### Python projects
+
+**`pyproject.toml`** — pytest-playwright native config:
+
+```toml
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+base_url = "http://localhost:3000"
+addopts = "--browser chromium"
+```
+
+**`zosma.config.ts`** — Top-level runner settings (same shape, different plugin):
+
+```typescript
+import { defineConfig } from '@zosmaai/zosma-qa-core';
+
+export default defineConfig({
+  plugins: ['pytest'],
   testDir: './tests',
   baseURL: 'http://localhost:3000',
   browsers: ['chromium'],
@@ -183,14 +250,16 @@ export default defineConfig({
 ```
 zosma-qa/
 ├── packages/
-│   ├── core/          @zosmaai/zosma-qa-core     — types, config loader, plugin interface
+│   ├── core/          @zosmaai/zosma-qa-core      — types, config loader, plugin interface
 │   ├── playwright/    @zosmaai/zosma-qa-playwright — base config, runner plugin
-│   └── cli/           @zosmaai/zosma-qa-cli      — `npx zosma-qa` CLI
-├── templates/playwright/                  — scaffold for `init` command
-├── examples/zosma-ai/                     — working tests against zosma.ai
-├── tests/                                 — your tests go here
-├── specs/                                 — AI planner output goes here
-├── .github/agents/                        — Playwright agent definitions
+│   └── cli/           @zosmaai/zosma-qa-cli        — `npx zosma-qa` CLI
+├── templates/
+│   ├── playwright/                — reference scaffold for TypeScript projects
+│   └── playwright-python/        — reference scaffold for Python projects
+├── examples/zosma-ai/             — working tests against zosma.ai
+├── tests/                         — your tests go here
+├── specs/                         — AI planner output goes here
+├── .github/agents/                — Playwright agent definitions
 └── docs/
 ```
 
@@ -206,7 +275,7 @@ zosma-qa/
 
 ## Contributing
 
-Contributions are welcome. Please open an issue before submitting a large PR.
+Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a PR.
 
 ## License
 

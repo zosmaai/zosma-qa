@@ -7,6 +7,10 @@
 - [Node.js 18+](https://nodejs.org/)
 - [pnpm 9+](https://pnpm.io/)
 
+**For Python support development only:**
+- Python 3.9+
+- [uv](https://docs.astral.sh/uv/) (recommended) or venv + pip
+
 ### Getting Started
 
 ```bash
@@ -37,6 +41,27 @@ cd examples/zosma-ai && pnpm exec playwright test tests/home.spec.ts
 
 # Open the HTML report
 pnpm report
+```
+
+### Testing the Python Scaffold Locally
+
+To verify the Python `init` path end-to-end, you need `uv` installed:
+
+```bash
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Build CLI first
+pnpm build
+
+# Scaffold a Python project into a temp directory
+mkdir /tmp/test-py-project && cd /tmp/test-py-project
+node /path/to/zosma-qa/packages/cli/bin/zosma-qa.js init
+# Choose: Python, any base URL, any browsers
+
+# Install browser binaries and run the seed test
+playwright install
+uv run pytest tests/test_seed.py
 ```
 
 ### Lint and Format
@@ -74,6 +99,15 @@ pnpm clean
 ### CLI Prompts
 
 The CLI uses `@inquirer/prompts` (the new modular API). Do not use the old `inquirer` package or `@types/inquirer`.
+
+### Python Support
+
+The `init` and `run` commands support Python projects via `pytest-playwright`. Key rules:
+
+- **`init.ts` uses inline template functions** — do not read from `templates/playwright-python/` at runtime; that directory is reference-only
+- **uv is preferred** over bare `pip install` — modern macOS/Ubuntu reject pip installs outside a venv. The CLI calls `uv add pytest-playwright` if `uv` is available, and prints instructions otherwise
+- **`run.ts` detects the runner from `zosma.config`** — if `plugins` includes `'pytest'`, it checks for `uv.lock` and uses `uv run pytest` or `python -m pytest` accordingly
+- **`init-agents` is TypeScript-only** — do not run it for Python projects
 
 ### Imports Between Packages
 

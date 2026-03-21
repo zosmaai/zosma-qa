@@ -6,7 +6,7 @@ This file is automatically loaded by OpenCode, Pi, Claude Code, and any agent th
 
 ## What This Project Is
 
-**zosma-qa** is an open-source, zero-config QA platform. Users clone it, drop Playwright test files into `tests/`, and get a fully working test setup with AI agent support out of the box.
+**zosma-qa** is an open-source, zero-config QA platform. Users run `npx zosma-qa init`, choose TypeScript or Python, and get a fully working Playwright test setup with AI agent support out of the box.
 
 The project ships three publishable npm packages plus a working example test suite that runs against the live [https://www.zosma.ai](https://www.zosma.ai) site.
 
@@ -20,7 +20,9 @@ zosma-qa/                          ← pnpm workspace root
 │   ├── core/                      ← @zosmaai/zosma-qa-core  (types, config, discovery)
 │   ├── playwright/                ← @zosmaai/zosma-qa-playwright  (runner + base config)
 │   └── cli/                       ← @zosmaai/zosma-qa-cli  (interactive CLI)
-├── templates/playwright/          ← scaffold output for `npx zosma-qa init`
+├── templates/
+│   ├── playwright/                ← reference scaffold for TypeScript projects
+│   └── playwright-python/        ← reference scaffold for Python projects
 ├── examples/zosma-ai/             ← working example: tests against zosma.ai
 │   ├── playwright.config.ts
 │   ├── tests/
@@ -62,7 +64,9 @@ zosma-qa/                          ← pnpm workspace root
 |---|---|
 | Language | TypeScript 5, strict mode, compiled to **CommonJS** |
 | Package manager | pnpm 9 (workspaces) |
-| Test runner | Playwright 1.52+ |
+| Test runner (TS) | Playwright 1.52+ |
+| Test runner (Python) | pytest-playwright (dispatched via CLI) |
+| Python env manager | uv (preferred) or venv + pip |
 | CLI prompts | `@inquirer/prompts` (NOT the old `inquirer` package) |
 | Build | `tsc` per package, `tsconfig.base.json` extended by each package |
 | Lint + Format | **Biome** (`pnpm lint` / `pnpm lint:fix` / `pnpm format`) |
@@ -114,8 +118,9 @@ Each package also has its own `pnpm build` / `pnpm typecheck` scripts.
 - **CommonJS output** (`"module": "commonjs"` in all `tsconfig.json` files)
 - All source files live under `src/`, compiled output goes to `dist/`
 - `tsconfig.base.json` at the root is extended by every package
-- ESLint config is at `.eslintrc.cjs` — do not add inline `/* eslint-disable */` without a comment explaining why
+- Biome handles all linting and formatting — run `pnpm lint:fix` before committing
 - Imports use `@zosmaai/zosma-qa-core` workspace aliases, not relative paths between packages
+- All Node.js built-in imports use the `node:` prefix (`node:fs`, `node:path`, etc.)
 
 ### `@inquirer/prompts` — important note
 
@@ -125,8 +130,10 @@ The CLI uses `@inquirer/prompts` (the new modular API). The old `inquirer` + `@t
 
 ## Config System (two files, both optional)
 
+### TypeScript projects (`plugins: ['playwright']`)
+
 ```typescript
-// zosma.config.ts — top-level zosma options
+// zosma.config.ts
 import { defineConfig } from '@zosmaai/zosma-qa-core';
 export default defineConfig({ baseURL: 'https://example.com', browsers: ['chromium'] });
 
@@ -135,7 +142,89 @@ import { defineConfig } from '@zosmaai/zosma-qa-playwright';
 export default defineConfig({ use: { baseURL: 'https://example.com' } });
 ```
 
+### Python projects (`plugins: ['pytest']`)
+
+```typescript
+// zosma.config.ts — same shape; only the plugin value differs
+import { defineConfig } from '@zosmaai/zosma-qa-core';
+export default defineConfig({ plugins: ['pytest'], baseURL: 'https://example.com', browsers: ['chromium'] });
+```
+
+```toml
+# pyproject.toml — pytest-playwright native config (no playwright.config.ts)
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+base_url = "https://example.com"
+addopts = "--browser chromium"
+```
+
 Config lookup: `{cwd}/zosma.config.ts` → `{cwd}/zosma.config.js` → built-in defaults.
+
+---
+
+## `npx zosma-qa init` — Prompt Order
+
+1. **Project name** — blank = scaffold in current directory; named = create subdirectory
+2. **Language** — TypeScript (default) or Python
+3. **Base URL** — validated for `http://https://` prefix
+4. **Browsers** — checkbox, chromium checked by default
+5. **AI loop** — TypeScript only; Python projects skip this with a note
+
+### TypeScript scaffold output
+
+```
+tests/seed.spec.ts
+specs/.gitkeep
+playwright.config.ts
+zosma.config.ts          (plugins: ['playwright'])
+.github/agents/.gitkeep
+package.json             (created via npm init -y if missing)
+                         (deps installed: @zosmaai/zosma-qa-playwright @playwright/test)
+                         (npx playwright init-agents --loop=<choice> runs if not skipped)
+```
+
+### Python scaffold output
+
+```
+tests/test_seed.py
+conftest.py
+pyproject.toml           (includes pytest-playwright dep, base_url, browser addopts)
+zosma.config.ts          (plugins: ['pytest'])
+specs/.gitkeep
+.github/agents/.gitkeep
+                         (uv add pytest-playwright runs if uv is available)
+                         (init-agents is skipped — not yet supported for Python)
+```
+
+---
+
+## `npx zosma-qa run` — Runner Dispatch
+
+The `run` command reads `zosma.config` and dispatches to the appropriate runner:
+
+| `plugins` value | Command used | uv.lock present? |
+|---|---|---|
+| `['playwright']` | `npx playwright test` | N/A |
+| `['pytest']` | `uv run pytest <testDir>` | Yes |
+| `['pytest']` | `python -m pytest <testDir>` | No |
+
+Flag mapping for Python:
+
+| CLI flag | pytest arg | Notes |
+|---|---|---|
+| `--grep <pattern>` | `-k <pattern>` | Mapped |
+| `--headed` | `--headed` | Mapped |
+| `--project`, `--debug`, `--workers`, `--shard`, `--reporter` | — | Silently ignored |
+
+---
+
+## Python Package Management (uv)
+
+The CLI prefers `uv` for Python dependency management because modern systems (macOS 14+, Ubuntu 22.04+) reject bare `pip install` outside a virtual environment with "externally-managed-environment" errors.
+
+- **`init` command**: checks `isUvAvailable()` via `spawnSync('uv', ['--version'])`. If true, runs `uv add pytest-playwright` automatically (creates `.venv/` and `uv.lock`). If false, prints installation instructions for both uv and venv+pip.
+- **`run` command**: checks for `uv.lock` in `process.cwd()`. If present, uses `uv run pytest`. Otherwise, uses `python -m pytest`.
+- **Templates**: `templates/playwright-python/pyproject.toml` is uv-compatible; `uv run` reads it natively.
 
 ---
 
@@ -146,12 +235,12 @@ This project follows Playwright's official agent convention:
 ```
 .github/agents/        ← agent definitions (generated by `npx playwright init-agents`)
 specs/                 ← planner writes *.md specs here
-tests/seed.spec.ts     ← agent entry point — customise for your app
-tests/                 ← generator writes *.spec.ts files here
-playwright.config.ts   ← standard location; picked up automatically
+tests/seed.spec.ts     ← TypeScript agent entry point
+tests/test_seed.py     ← Python agent entry point
+playwright.config.ts   ← TypeScript projects only
 ```
 
-The CLI's `agents init` command prompts for an AI loop (OpenCode is the default) and runs `npx playwright init-agents --loop=<choice>`.
+The CLI's `agents init` command prompts for an AI loop (OpenCode is the default) and runs `npx playwright init-agents --loop=<choice>`. **This is TypeScript-only.** Python projects currently skip agent scaffolding with a note.
 
 ---
 
@@ -310,15 +399,17 @@ await expect(page.locator('h1').filter({ hasText: /your team/i }).first()).toBeV
 |---|---|
 | `packages/core/src/types.ts` | All shared TypeScript types |
 | `packages/core/src/config.ts` | `defineConfig()` and `loadConfig()` |
-| `packages/core/src/discovery.ts` | `findTestFiles()` |
+| `packages/core/src/discovery.ts` | `findTestFiles()` — TS and Python patterns |
 | `packages/playwright/src/base-config.ts` | Playwright base config factory |
 | `packages/playwright/src/runner.ts` | `PlaywrightRunner` plugin class |
-| `packages/cli/src/commands/init.ts` | Interactive `init` command |
+| `packages/cli/src/commands/init.ts` | Interactive `init` command — TypeScript + Python scaffolds |
+| `packages/cli/src/commands/run.ts` | `run` command — dispatches to playwright or pytest |
 | `packages/cli/src/commands/agents.ts` | `agents init` with AI loop selection |
 | `examples/zosma-ai/playwright.config.ts` | Example project Playwright config |
-| `templates/playwright/` | Files scaffolded by `zosma-qa init` |
+| `templates/playwright/` | Reference scaffold for TypeScript projects |
+| `templates/playwright-python/` | Reference scaffold for Python projects |
 | `tsconfig.base.json` | Root TypeScript config extended by all packages |
-| `.eslintrc.cjs` | ESLint config |
+| `biome.json` | Biome lint + format config |
 | `.env.example` | Required environment variables |
 
 ---
@@ -331,3 +422,6 @@ await expect(page.locator('h1').filter({ hasText: /your team/i }).first()).toBeV
 - Do not add `role="navigation"` assertions — the site does not use it
 - Do not use `getByPlaceholder` for the contact form — use `getByLabel`
 - Do not add real contact form submissions in tests — always mock the POST
+- Do not read from `templates/playwright-python/` at runtime — `init.ts` uses inline template functions, not the template files
+- Do not run `npx playwright init-agents` for Python projects — it requires TypeScript/Node.js Playwright setup
+- Do not use `pip install` directly in the CLI without a venv — it will fail on modern systems; use `uv add` or print instructions instead

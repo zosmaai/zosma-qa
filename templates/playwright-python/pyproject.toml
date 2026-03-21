@@ -1,0 +1,12 @@
+[project]
+name = "my-qa-project"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    "pytest-playwright>=0.5.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+base_url = "http://localhost:3000"
+addopts = "--browser chromium"
