@@ -1,8 +1,8 @@
 import { Command } from 'commander';
-import { runInit } from './commands/init';
-import { runTests } from './commands/run';
 import { initAgents } from './commands/agents';
+import { runInit } from './commands/init';
 import { openReport } from './commands/report';
+import { runTests } from './commands/run';
 
 const program = new Command();
 
@@ -38,9 +38,7 @@ program
 
 // ─── agents ───────────────────────────────────────────────────────────────────
 
-const agentsCmd = program
-  .command('agents')
-  .description('Manage Playwright AI agent definitions');
+const agentsCmd = program.command('agents').description('Manage Playwright AI agent definitions');
 
 agentsCmd
   .command('init')

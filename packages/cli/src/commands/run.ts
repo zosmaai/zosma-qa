@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
 import chalk from 'chalk';
 
 export interface RunOptions {
@@ -30,9 +30,7 @@ export async function runTests(options: RunOptions = {}): Promise<void> {
 
   if (exitCode !== 0) {
     console.log('');
-    console.log(
-      chalk.dim(`  View the report: `) + chalk.cyan('npx zosma-qa report'),
-    );
+    console.log(chalk.dim(`  View the report: `) + chalk.cyan('npx zosma-qa report'));
     process.exit(exitCode);
   }
 }

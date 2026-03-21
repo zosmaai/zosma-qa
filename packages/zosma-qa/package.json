@@ -1,12 +1,15 @@
 {
   "name": "zosma-qa",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Zero-config QA platform — Playwright, AI agents, and extensible test runners",
   "license": "Apache-2.0",
   "bin": {
     "zosma-qa": "bin/zosma-qa.js"
   },
-  "files": ["bin", "README.md"],
+  "files": [
+    "bin",
+    "README.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/zosmaai/zosma-qa.git"

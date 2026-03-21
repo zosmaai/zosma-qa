@@ -1,4 +1,8 @@
-import { defineConfig as pwDefineConfig, devices, type PlaywrightTestConfig } from '@playwright/test';
+import {
+  devices,
+  type PlaywrightTestConfig,
+  defineConfig as pwDefineConfig,
+} from '@playwright/test';
 import type { Browser } from '@zosmaai/zosma-qa-core';
 
 /**
@@ -57,9 +61,7 @@ export function defineConfig(overrides: ZosmaPlaywrightConfig = {}): PlaywrightT
     forbidOnly: isCI,
     retries: isCI ? 2 : 0,
     workers: isCI ? 1 : undefined,
-    reporter: isCI
-      ? [['html'], ['github'], ['list']]
-      : [['html'], ['list']],
+    reporter: isCI ? [['html'], ['github'], ['list']] : [['html'], ['list']],
     use: {
       trace: 'on-first-retry',
       screenshot: 'only-on-failure',

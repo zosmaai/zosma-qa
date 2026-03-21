@@ -65,7 +65,7 @@ zosma-qa/                          ← pnpm workspace root
 | Test runner | Playwright 1.52+ |
 | CLI prompts | `@inquirer/prompts` (NOT the old `inquirer` package) |
 | Build | `tsc` per package, `tsconfig.base.json` extended by each package |
-| Lint | ESLint + `@typescript-eslint` |
+| Lint + Format | **Biome** (`pnpm lint` / `pnpm lint:fix` / `pnpm format`) |
 | Node | >=18 |
 
 ---
@@ -90,6 +90,15 @@ pnpm typecheck
 
 # Open the Playwright HTML report
 pnpm report
+
+# Lint the entire repo (Biome)
+pnpm lint
+
+# Lint and auto-fix
+pnpm lint:fix
+
+# Format all files
+pnpm format
 
 # Clean build artifacts and test results
 pnpm clean

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 // spec: specs/zosma-site.md
 // seed: tests/seed.spec.ts
@@ -17,7 +17,10 @@ test.describe('OpenZosma page', () => {
     // The h1 reads: "Your Team's AI Twins. Always On."
     // Use a text locator to avoid strict-mode issues with sr-only nav headings.
     await expect(
-      page.locator('h1').filter({ hasText: /your team/i }).first(),
+      page
+        .locator('h1')
+        .filter({ hasText: /your team/i })
+        .first(),
     ).toBeVisible();
   });
 
@@ -33,9 +36,7 @@ test.describe('OpenZosma page', () => {
   });
 
   test('"Your AI Team" section is visible', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: /your ai team/i }).first(),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /your ai team/i }).first()).toBeVisible();
   });
 
   test('"Up and Running in Three Steps" section shows all three steps', async ({ page }) => {
@@ -54,9 +55,7 @@ test.describe('OpenZosma page', () => {
   });
 
   test('"Fully Open Source. Self-Hosted." section is present', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: /fully open source/i }).first(),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /fully open source/i }).first()).toBeVisible();
     await expect(page.getByText(/no vendor lock-in/i).first()).toBeVisible();
     await expect(page.getByText(/apache 2\.0 license/i).first()).toBeVisible();
   });

@@ -1,6 +1,5 @@
-import { spawn } from 'child_process';
-import path from 'path';
-import type { ZosmaPlugin, RunnerConfig, TestResult, RunSummary } from '@zosmaai/zosma-qa-core';
+import { spawn } from 'node:child_process';
+import type { RunnerConfig, RunSummary, TestResult, ZosmaPlugin } from '@zosmaai/zosma-qa-core';
 
 /**
  * Playwright test runner plugin.

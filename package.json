@@ -14,14 +14,15 @@
     "test:examples": "playwright test --config examples/zosma-ai/playwright.config.ts",
     "report": "playwright show-report",
     "typecheck": "pnpm -r typecheck",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
     "clean": "pnpm -r --if-present clean && rm -rf playwright-report test-results"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.8",
     "@playwright/test": "^1.52.0",
     "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "^8.57.0",
     "typescript": "^5.4.0"
   }
 }

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 // spec: specs/zosma-site.md
 // seed: tests/seed.spec.ts
@@ -23,7 +23,10 @@ test.describe('Contact page', () => {
   test('page heading is visible', async ({ page }) => {
     // Match the heading text loosely in case wording differs slightly
     await expect(
-      page.locator('h1, h2').filter({ hasText: /let.s unlock/i }).first(),
+      page
+        .locator('h1, h2')
+        .filter({ hasText: /let.s unlock/i })
+        .first(),
     ).toBeVisible();
   });
 
@@ -61,10 +64,12 @@ test.describe('Contact page', () => {
     await page.getByLabel(/business email/i).fill('qa-test@zosma-qa.dev');
     await page.getByLabel(/phone number/i).fill('9876543210');
     await page.getByLabel(/organization/i).fill('zosma-qa Open Source Project');
-    await page.getByLabel(/message/i).fill(
-      'This is an automated test submission from zosma-qa. ' +
-        'The network request has been intercepted — no real contact was created.',
-    );
+    await page
+      .getByLabel(/message/i)
+      .fill(
+        'This is an automated test submission from zosma-qa. ' +
+          'The network request has been intercepted — no real contact was created.',
+      );
 
     // ── Verify all fields are populated before submit ─────────────────────────
     await expect(page.getByLabel(/full name/i)).toHaveValue('QA Test User');
@@ -86,15 +91,20 @@ test.describe('Contact page', () => {
     const url = page.url();
     const redirected = !url.includes('/contact');
 
-    const anySuccessText = await Promise.any([
-      page.getByText(/thank you/i).isVisible(),
-      page.getByText(/submitt/i).isVisible(),
-      page.getByText(/we.ll be in touch/i).isVisible(),
-      page.getByText(/success/i).isVisible(),
-      page.getByText(/message.*sent/i).isVisible(),
-    ].map((p) => p.then((v) => (v ? true : Promise.reject())))).catch(() => false);
+    const anySuccessText = await Promise.any(
+      [
+        page.getByText(/thank you/i).isVisible(),
+        page.getByText(/submitt/i).isVisible(),
+        page.getByText(/we.ll be in touch/i).isVisible(),
+        page.getByText(/success/i).isVisible(),
+        page.getByText(/message.*sent/i).isVisible(),
+      ].map((p) => p.then((v) => (v ? true : Promise.reject()))),
+    ).catch(() => false);
 
-    const nameValue = await page.getByLabel(/full name/i).inputValue().catch(() => '');
+    const nameValue = await page
+      .getByLabel(/full name/i)
+      .inputValue()
+      .catch(() => '');
     const formCleared = nameValue === '';
 
     // Accept: success message shown, form reset, redirect, or a POST was fired

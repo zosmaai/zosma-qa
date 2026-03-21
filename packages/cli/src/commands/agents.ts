@@ -1,7 +1,7 @@
-import { spawn } from 'child_process';
-import chalk from 'chalk';
+import { spawn } from 'node:child_process';
 import { select } from '@inquirer/prompts';
 import type { AgentLoop } from '@zosmaai/zosma-qa-core';
+import chalk from 'chalk';
 
 /**
  * `zosma-qa agents init` — prompts the user to choose their AI coding tool
@@ -36,7 +36,7 @@ export async function initAgents(loopOverride?: AgentLoop): Promise<void> {
         {
           name: 'Claude Code',
           value: 'claude',
-          description: 'Anthropic\'s Claude Code CLI (claude.ai/code)',
+          description: "Anthropic's Claude Code CLI (claude.ai/code)",
         },
         {
           name: 'VS Code  (Copilot)',
@@ -59,9 +59,13 @@ export async function initAgents(loopOverride?: AgentLoop): Promise<void> {
     console.log(chalk.bold.green('  Agent definitions generated!'));
     console.log('');
     console.log(chalk.dim('  Three agents are now available:\n'));
-    console.log(`  ${chalk.bold('🎭 planner')}    explores your app and writes a Markdown test plan`);
+    console.log(
+      `  ${chalk.bold('🎭 planner')}    explores your app and writes a Markdown test plan`,
+    );
     console.log(`  ${chalk.bold('🎭 generator')}  turns the plan into Playwright test files`);
-    console.log(`  ${chalk.bold('🎭 healer')}     runs failing tests and repairs them automatically`);
+    console.log(
+      `  ${chalk.bold('🎭 healer')}     runs failing tests and repairs them automatically`,
+    );
     console.log('');
     console.log(
       chalk.dim(
@@ -74,8 +78,7 @@ export async function initAgents(loopOverride?: AgentLoop): Promise<void> {
     console.log(chalk.yellow('  Could not run playwright init-agents.'));
     console.log(
       chalk.dim(
-        '  Make sure Playwright is installed:\n' +
-          '    pnpm install && npx playwright install\n',
+        '  Make sure Playwright is installed:\n' + '    pnpm install && npx playwright install\n',
       ),
     );
     process.exit(exitCode);

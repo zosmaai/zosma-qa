@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 /**
  * seed.spec.ts — AI agent entry point for the zosma.ai test suite.

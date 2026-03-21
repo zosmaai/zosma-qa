@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 // spec: specs/zosma-site.md
 // seed: tests/seed.spec.ts
@@ -33,7 +33,10 @@ test.describe('Home page', () => {
   test('"Start Free Trial" CTA is visible in the hero', async ({ page }) => {
     // The CTA may be a <a> or <button> — match either
     await expect(
-      page.locator('a, button').filter({ hasText: /start free trial/i }).first(),
+      page
+        .locator('a, button')
+        .filter({ hasText: /start free trial/i })
+        .first(),
     ).toBeVisible();
   });
 
@@ -46,9 +49,7 @@ test.describe('Home page', () => {
   });
 
   test('FAQ section is visible and contains at least one question', async ({ page }) => {
-    await expect(
-      page.getByRole('heading', { name: /frequently asked questions/i }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /frequently asked questions/i })).toBeVisible();
 
     // First FAQ item should be present
     await expect(page.getByText(/is my data secure/i)).toBeVisible();

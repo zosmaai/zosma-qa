@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 /**
  * seed.spec.ts — entry point for Playwright AI agents.
@@ -38,7 +38,10 @@ const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 const isConfigured = !baseURL.includes('localhost');
 
 test('seed', async ({ page }) => {
-  test.skip(!isConfigured, 'BASE_URL is not configured — set BASE_URL to your app URL to activate this test.');
+  test.skip(
+    !isConfigured,
+    'BASE_URL is not configured — set BASE_URL to your app URL to activate this test.',
+  );
 
   // Navigate to the app under test.
   // baseURL is set in playwright.config.ts — no need to hardcode it here.

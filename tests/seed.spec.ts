@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 /**
  * seed.spec.ts — root AI agent entry point.
@@ -24,7 +24,10 @@ const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 const isConfigured = !baseURL.includes('localhost');
 
 test('seed', async ({ page }) => {
-  test.skip(!isConfigured, 'BASE_URL is not configured — set BASE_URL to your app URL to activate this test.');
+  test.skip(
+    !isConfigured,
+    'BASE_URL is not configured — set BASE_URL to your app URL to activate this test.',
+  );
 
   await page.goto('/');
 
