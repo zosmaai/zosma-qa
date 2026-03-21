@@ -1,0 +1,46 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Auto-load project context into every session
+  "instructions": [
+    "AGENTS.md",
+    "docs/ARCHITECTURE.md"
+  ],
+
+  // Ignore noisy directories from file watching
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      ".git/**",
+      "test-results/**",
+      "playwright-report/**",
+      "packages/*/dist/**"
+    ]
+  },
+
+  // Code formatters
+  "formatter": {
+    "prettier": {}
+  },
+
+  // Project-specific slash commands
+  "command": {
+    "build": {
+      "description": "Build all packages (core, playwright, cli)",
+      "template": "Run `pnpm build` from the repo root to compile all three packages. Report any TypeScript errors and fix them."
+    },
+    "test": {
+      "description": "Run the full example test suite (32 tests against zosma.ai)",
+      "template": "Run `pnpm test:examples` to execute all 32 Playwright tests against the live https://www.zosma.ai site. Report which tests pass and which fail. For each failure, diagnose the locator issue using the DOM patterns documented in AGENTS.md and propose a fix."
+    },
+    "typecheck": {
+      "description": "Type-check all packages without emitting output",
+      "template": "Run `pnpm typecheck` to type-check all packages. Report any errors found and fix them, keeping strict mode and CommonJS output constraints in mind."
+    },
+    "new-test": {
+      "description": "Scaffold a new Playwright spec for a zosma.ai page",
+      "template": "Create a new Playwright spec file for the $ARGUMENTS page. Use the standard boilerplate from AGENTS.md (test.describe, beforeEach with waitForLoadState networkidle). Apply all DOM patterns documented in AGENTS.md. After writing, run the spec and fix any failures before finishing."
+    }
+  }
+}
