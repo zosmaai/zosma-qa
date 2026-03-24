@@ -1,0 +1,14 @@
+{
+  "name": "appium-demo-example",
+  "version": "0.1.0",
+  "description": "Example Appium mobile tests — shows the zosma-qa Appium workflow",
+  "private": true,
+  "scripts": {
+    "test": "zosma-qa run"
+  },
+  "devDependencies": {
+    "@zosmaai/zosma-qa-appium": "workspace:*",
+    "@zosmaai/zosma-qa-core": "workspace:*",
+    "appium": ">=2.0.0"
+  }
+}

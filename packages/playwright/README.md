@@ -67,6 +67,7 @@ export default defineConfig({
 
 - [`@zosmaai/zosma-qa-core`](https://www.npmjs.com/package/@zosmaai/zosma-qa-core) — shared types and plugin interface
 - [`@zosmaai/zosma-qa-playwright`](https://www.npmjs.com/package/@zosmaai/zosma-qa-playwright) — this package
+- [`@zosmaai/zosma-qa-appium`](https://www.npmjs.com/package/@zosmaai/zosma-qa-appium) — Appium mobile testing runner
 - [`@zosmaai/zosma-qa-cli`](https://www.npmjs.com/package/@zosmaai/zosma-qa-cli) — interactive CLI (`npx zosma-qa`)
 
 Full documentation: [github.com/zosmaai/zosma-qa](https://github.com/zosmaai/zosma-qa)

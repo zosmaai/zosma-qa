@@ -2,14 +2,16 @@
 
 ## Overview
 
-zosma-qa is structured as a **pnpm monorepo** with three publishable packages and a clear separation between the framework core, the Playwright runner, and the CLI UX layer.
+zosma-qa is structured as a **pnpm monorepo** with five publishable packages and a clear separation between the framework core, test runners, and the CLI UX layer.
 
 ```
 zosma-qa/
 ├── packages/
 │   ├── core/          — plugin interface, config system, test discovery
-│   ├── playwright/    — Playwright runner and base config
-│   └── cli/           — interactive CLI (`npx zosma-qa`)
+│   ├── playwright/    — Playwright runner and base config (web testing)
+│   ├── appium/        — Appium runner, test helpers, device management (mobile testing)
+│   ├── cli/           — interactive CLI (`npx zosma-qa`)
+│   └── zosma-qa/      — CLI entry point wrapper
 ├── templates/         — scaffold content for `npx zosma-qa init`
 ├── examples/          — working test suites that demo the framework
 ├── tests/             — root test directory (users put their tests here)
@@ -26,9 +28,17 @@ zosma-qa/
   ├── @zosmaai/zosma-qa-core
   └── @zosmaai/zosma-qa-playwright
         └── @zosmaai/zosma-qa-core
+
+@zosmaai/zosma-qa-appium
+  └── @zosmaai/zosma-qa-core
+  (peer: appium >=2.0.0)
+
+zosma-qa (entry point wrapper)
+  └── @zosmaai/zosma-qa-cli
 ```
 
-`@playwright/test` is a **peer dependency** of `@zosmaai/zosma-qa-playwright` — users supply their own version, ensuring they can upgrade Playwright independently.
+- `@playwright/test` is a **peer dependency** of `@zosmaai/zosma-qa-playwright` — users supply their own version
+- `appium` is a **peer dependency** of `@zosmaai/zosma-qa-appium` — users install it globally or locally
 
 ---
 
@@ -89,6 +99,32 @@ video: retain-on-failure
 
 ---
 
+## packages/appium
+
+**Purpose:** Appium runner plugin for mobile testing (iOS, Android, React Native, Flutter).
+
+**Key modules:**
+
+| Module | Description |
+|---|---|
+| `config/` | Config types, smart defaults, capabilities builder, auto-detection |
+| `server/` | Appium server lifecycle (start, stop, health checks, port allocation) |
+| `device/` | Device management (iOS simulators, Android emulators, React Native detection) |
+| `webdriver/` | WebdriverIO session management, test execution, test loading |
+| `utils/` | Agent-friendly test helpers (`tapButton`, `fillInput`, `expectText`, etc.) |
+| `test-builder.ts` | Playwright-compatible `test()` API with `{ driver }` fixture |
+| `runner.ts` | `AppiumRunner` — orchestrates config, server, session, tests, cleanup |
+| `discovery.ts` | Finds `.appium.ts` and `.appium.py` test files |
+
+**Design decisions:**
+- Tests use a Playwright-like API (`test.describe`, `test.beforeEach`) for consistency
+- The `driver` fixture is a WebdriverIO `Browser` instance injected automatically
+- High-level helpers (`tapButton`, `fillInput`) are designed to be readable by AI agents
+- Smart defaults auto-detect app path, device, and platform from React Native projects
+- `appium` is a peer dependency — users install their own version
+
+---
+
 ## packages/cli
 
 **Purpose:** Developer-facing UX layer. All commands delegate to underlying tools — the CLI adds prompts, colour, and discoverability, not functionality.
@@ -146,11 +182,15 @@ The `init` command scaffolds this structure and optionally runs `playwright init
 - `*.spec.ts`, `*.test.ts`
 - `*.spec.js`, `*.test.js`
 
+`@zosmaai/zosma-qa-appium`'s `findAppiumTests()` discovers mobile test files matching:
+- `*.appium.ts`, `*.appium.js`
+- `*.appium.py`
+
 Ignored directories: `node_modules`, `dist`, `.git`, `.playwright`, `playwright-report`, `test-results`.
 
 ---
 
-## Adding a New Runner Plugin (Future)
+## Adding a New Runner Plugin
 
 1. Create `packages/<runner>/` with a `package.json`
 2. Implement `ZosmaPlugin` from `@zosmaai/zosma-qa-core`
@@ -158,7 +198,7 @@ Ignored directories: `node_modules`, `dist`, `.git`, `.playwright`, `playwright-
 4. Add the runner name to `zosma.config.ts`'s `plugins` array
 5. The CLI's `run` command will pick it up
 
-Example skeleton:
+See `packages/appium/` for a complete reference implementation. Here's a minimal skeleton:
 
 ```typescript
 import type { ZosmaPlugin, RunnerConfig, TestResult } from '@zosmaai/zosma-qa-core';

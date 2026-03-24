@@ -48,6 +48,7 @@ export class MyRunner implements ZosmaPlugin {
 
 - [`@zosmaai/zosma-qa-core`](https://www.npmjs.com/package/@zosmaai/zosma-qa-core) — this package
 - [`@zosmaai/zosma-qa-playwright`](https://www.npmjs.com/package/@zosmaai/zosma-qa-playwright) — Playwright runner and base config
+- [`@zosmaai/zosma-qa-appium`](https://www.npmjs.com/package/@zosmaai/zosma-qa-appium) — Appium mobile testing runner
 - [`@zosmaai/zosma-qa-cli`](https://www.npmjs.com/package/@zosmaai/zosma-qa-cli) — interactive CLI (`npx zosma-qa`)
 
 Full documentation: [github.com/zosmaai/zosma-qa](https://github.com/zosmaai/zosma-qa)

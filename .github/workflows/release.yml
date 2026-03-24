@@ -34,6 +34,7 @@ jobs:
           echo "Publishing version: $VERSION"
           npm --prefix packages/core       version "$VERSION" --no-git-tag-version --allow-same-version
           npm --prefix packages/playwright version "$VERSION" --no-git-tag-version --allow-same-version
+          npm --prefix packages/appium     version "$VERSION" --no-git-tag-version --allow-same-version
           npm --prefix packages/cli        version "$VERSION" --no-git-tag-version --allow-same-version
           npm --prefix packages/zosma-qa   version "$VERSION" --no-git-tag-version --allow-same-version
 
@@ -52,6 +53,12 @@ jobs:
       - name: Publish @zosmaai/zosma-qa-playwright
         run: pnpm publish --access public --no-git-checks
         working-directory: packages/playwright
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @zosmaai/zosma-qa-appium
+        run: pnpm publish --access public --no-git-checks
+        working-directory: packages/appium
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

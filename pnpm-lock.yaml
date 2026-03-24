@@ -28,6 +28,18 @@ importers:
         specifier: ^5.4.0
         version: 5.9.3
 
+  examples/appium-demo:
+    devDependencies:
+      '@zosmaai/zosma-qa-appium':
+        specifier: workspace:*
+        version: link:../../packages/appium
+      '@zosmaai/zosma-qa-core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      appium:
+        specifier: '>=2.0.0'
+        version: 3.2.2
+
   examples/zosma-ai:
     devDependencies:
       '@playwright/test':

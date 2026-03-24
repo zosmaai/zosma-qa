@@ -35,14 +35,15 @@ zosma-qa aims to be the last QA bootstrap you ever write.
 The plugin interface in `@zosmaai/zosma-qa-core` makes adding new runners straightforward.
 Planned plugins:
 
-| Plugin | Test type | Underlying tool |
-|---|---|---|
-| `@zosmaai/zosma-qa-rest` | REST API testing | Supertest / Pactum |
-| `@zosmaai/zosma-qa-k6` | Load testing | k6 |
-| `@zosmaai/zosma-qa-artillery` | Load testing | Artillery |
-| `@zosmaai/zosma-qa-accessibility` | Accessibility | axe-core + Playwright |
-| `@zosmaai/zosma-qa-contract` | Contract testing | Pact |
-| `@zosmaai/zosma-qa-visual` | Visual regression | Percy / Chromatic |
+| Plugin | Test type | Underlying tool | Status |
+|---|---|---|---|
+| `@zosmaai/zosma-qa-appium` | Mobile testing (iOS & Android) | Appium + WebdriverIO | **Available** |
+| `@zosmaai/zosma-qa-rest` | REST API testing | Supertest / Pactum | Planned |
+| `@zosmaai/zosma-qa-k6` | Load testing | k6 | Planned |
+| `@zosmaai/zosma-qa-artillery` | Load testing | Artillery | Planned |
+| `@zosmaai/zosma-qa-accessibility` | Accessibility | axe-core + Playwright | Planned |
+| `@zosmaai/zosma-qa-contract` | Contract testing | Pact | Planned |
+| `@zosmaai/zosma-qa-visual` | Visual regression | Percy / Chromatic | Planned |
 
 Each plugin follows the same pattern: implement `ZosmaPlugin`, add a config
 file, and wire it into `zosma.config.ts`. Users run everything with a single

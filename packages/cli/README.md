@@ -54,6 +54,7 @@ Generate a plan for the guest checkout flow.
 
 - [`@zosmaai/zosma-qa-core`](https://www.npmjs.com/package/@zosmaai/zosma-qa-core) — shared types and plugin interface
 - [`@zosmaai/zosma-qa-playwright`](https://www.npmjs.com/package/@zosmaai/zosma-qa-playwright) — Playwright runner and base config
+- [`@zosmaai/zosma-qa-appium`](https://www.npmjs.com/package/@zosmaai/zosma-qa-appium) — Appium mobile testing runner
 - [`@zosmaai/zosma-qa-cli`](https://www.npmjs.com/package/@zosmaai/zosma-qa-cli) — this package
 
 Full documentation: [github.com/zosmaai/zosma-qa](https://github.com/zosmaai/zosma-qa)
