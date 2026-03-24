@@ -1,0 +1,46 @@
+{
+  "name": "@zosmaai/zosma-qa-appium",
+  "version": "0.0.1",
+  "description": "Appium mobile testing runner for zosma-qa",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zosmaai/zosma-qa.git",
+    "directory": "packages/appium"
+  },
+  "homepage": "https://github.com/zosmaai/zosma-qa#readme",
+  "bugs": {
+    "url": "https://github.com/zosmaai/zosma-qa/issues"
+  },
+  "keywords": [
+    "appium",
+    "mobile",
+    "testing",
+    "qa",
+    "ios",
+    "android",
+    "e2e",
+    "zero-config"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@zosmaai/zosma-qa-core": "workspace:*",
+    "portfinder": "^1.0.32"
+  },
+  "peerDependencies": {
+    "appium": ">=2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
