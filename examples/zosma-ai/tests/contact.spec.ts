@@ -20,9 +20,6 @@ test.describe('Contact page', () => {
     await expect(page.locator('button[type="submit"], button').last()).toBeVisible();
   });
 
-  test('navigation links are accessible', async ({ page }) => {
-    const header = page.locator('header').first();
-    await expect(header.getByRole('link', { name: /about/i })).toBeVisible();
-    await expect(header.getByRole('link', { name: /openzosma/i })).toBeVisible();
-  });
+  // Navigation is already covered on the home/about pages; keep the
+  // contact suite focused on the form itself.
 });

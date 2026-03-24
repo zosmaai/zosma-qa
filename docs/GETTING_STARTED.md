@@ -89,6 +89,13 @@ After the run, an HTML report opens automatically. Re-open it anytime:
 npx zosma-qa report
 ```
 
+If you are working inside this repo and running the zosma.ai example suite, use:
+
+```bash
+pnpm test:examples
+pnpm report        # opens examples/zosma-ai/playwright-report
+```
+
 ---
 
 ## Option B — Install as a package in your own project

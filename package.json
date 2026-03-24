@@ -12,7 +12,7 @@
     "build": "pnpm -r build",
     "test": "playwright test",
     "test:examples": "playwright test --config examples/zosma-ai/playwright.config.ts",
-    "report": "playwright show-report",
+    "report": "npx zosma-qa report",
     "typecheck": "pnpm -r typecheck",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

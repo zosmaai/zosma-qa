@@ -1,46 +1,101 @@
 {
   "$schema": "https://opencode.ai/config.json",
-
-  // Auto-load project context into every session
-  "instructions": [
-    "AGENTS.md",
-    "docs/ARCHITECTURE.md"
-  ],
-
-  // Ignore noisy directories from file watching
-  "watcher": {
-    "ignore": [
-      "node_modules/**",
-      "dist/**",
-      ".git/**",
-      "test-results/**",
-      "playwright-report/**",
-      "packages/*/dist/**"
-    ]
+  "mcp": {
+    "playwright-test": {
+      "type": "local",
+      "command": [
+        "npx",
+        "playwright",
+        "run-test-mcp-server"
+      ],
+      "enabled": true
+    }
   },
-
-  // Code formatters
-  "formatter": {
-    "prettier": {}
+  "tools": {
+    "playwright*": false
   },
-
-  // Project-specific slash commands
-  "command": {
-    "build": {
-      "description": "Build all packages (core, playwright, cli)",
-      "template": "Run `pnpm build` from the repo root to compile all three packages. Report any TypeScript errors and fix them."
+  "agent": {
+    "playwright-test-generator": {
+      "description": "Use this agent when you need to create automated browser tests using Playwright",
+      "mode": "subagent",
+      "prompt": "{file:.opencode/prompts/playwright-test-generator.md}",
+      "tools": {
+        "ls": true,
+        "glob": true,
+        "grep": true,
+        "read": true,
+        "playwright-test*browser_click": true,
+        "playwright-test*browser_drag": true,
+        "playwright-test*browser_evaluate": true,
+        "playwright-test*browser_file_upload": true,
+        "playwright-test*browser_handle_dialog": true,
+        "playwright-test*browser_hover": true,
+        "playwright-test*browser_navigate": true,
+        "playwright-test*browser_press_key": true,
+        "playwright-test*browser_select_option": true,
+        "playwright-test*browser_snapshot": true,
+        "playwright-test*browser_type": true,
+        "playwright-test*browser_verify_element_visible": true,
+        "playwright-test*browser_verify_list_visible": true,
+        "playwright-test*browser_verify_text_visible": true,
+        "playwright-test*browser_verify_value": true,
+        "playwright-test*browser_wait_for": true,
+        "playwright-test*generator_read_log": true,
+        "playwright-test*generator_setup_page": true,
+        "playwright-test*generator_write_test": true
+      }
     },
-    "test": {
-      "description": "Run the full example test suite (32 tests against zosma.ai)",
-      "template": "Run `pnpm test:examples` to execute all 32 Playwright tests against the live https://www.zosma.ai site. Report which tests pass and which fail. For each failure, diagnose the locator issue using the DOM patterns documented in AGENTS.md and propose a fix."
+    "playwright-test-healer": {
+      "description": "Use this agent when you need to debug and fix failing Playwright tests",
+      "mode": "subagent",
+      "prompt": "{file:.opencode/prompts/playwright-test-healer.md}",
+      "tools": {
+        "ls": true,
+        "glob": true,
+        "grep": true,
+        "read": true,
+        "edit": true,
+        "write": true,
+        "playwright-test*browser_console_messages": true,
+        "playwright-test*browser_evaluate": true,
+        "playwright-test*browser_generate_locator": true,
+        "playwright-test*browser_network_requests": true,
+        "playwright-test*browser_snapshot": true,
+        "playwright-test*test_debug": true,
+        "playwright-test*test_list": true,
+        "playwright-test*test_run": true
+      }
     },
-    "typecheck": {
-      "description": "Type-check all packages without emitting output",
-      "template": "Run `pnpm typecheck` to type-check all packages. Report any errors found and fix them, keeping strict mode and CommonJS output constraints in mind."
-    },
-    "new-test": {
-      "description": "Scaffold a new Playwright spec for a zosma.ai page",
-      "template": "Create a new Playwright spec file for the $ARGUMENTS page. Use the standard boilerplate from AGENTS.md (test.describe, beforeEach with waitForLoadState networkidle). Apply all DOM patterns documented in AGENTS.md. After writing, run the spec and fix any failures before finishing."
+    "playwright-test-planner": {
+      "description": "Use this agent when you need to create comprehensive test plan for a web application or website",
+      "mode": "subagent",
+      "prompt": "{file:.opencode/prompts/playwright-test-planner.md}",
+      "tools": {
+        "ls": true,
+        "glob": true,
+        "grep": true,
+        "read": true,
+        "playwright-test*browser_click": true,
+        "playwright-test*browser_close": true,
+        "playwright-test*browser_console_messages": true,
+        "playwright-test*browser_drag": true,
+        "playwright-test*browser_evaluate": true,
+        "playwright-test*browser_file_upload": true,
+        "playwright-test*browser_handle_dialog": true,
+        "playwright-test*browser_hover": true,
+        "playwright-test*browser_navigate": true,
+        "playwright-test*browser_navigate_back": true,
+        "playwright-test*browser_network_requests": true,
+        "playwright-test*browser_press_key": true,
+        "playwright-test*browser_run_code": true,
+        "playwright-test*browser_select_option": true,
+        "playwright-test*browser_snapshot": true,
+        "playwright-test*browser_take_screenshot": true,
+        "playwright-test*browser_type": true,
+        "playwright-test*browser_wait_for": true,
+        "playwright-test*planner_setup_page": true,
+        "playwright-test*planner_save_plan": true
+      }
     }
   }
 }

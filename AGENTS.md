@@ -242,6 +242,36 @@ playwright.config.ts   ← TypeScript projects only
 
 The CLI's `agents init` command prompts for an AI loop (OpenCode is the default) and runs `npx playwright init-agents --loop=<choice>`. **This is TypeScript-only.** Python projects currently skip agent scaffolding with a note.
 
+After `init-agents` completes, zosma-qa patches the generated planner/generator
+prompts so they always save Markdown plans into the existing `specs/`
+directory:
+
+- Planner uses paths like `specs/checkout.plan.md`
+- It avoids creating sibling folders like `spec/` or `plans/` when `specs/`
+  already exists
+
+### Using Playwright test agents
+
+Playwright ships three built-in agents that work with zosma-qa's seed tests:
+
+| Agent | Role |
+|---|---|
+| `planner` | explores the app starting from `tests/seed.spec.ts` and writes Markdown plans into `specs/` |
+| `generator` | reads a Markdown plan and writes Playwright tests into `tests/` |
+| `healer` | replays failing tests and repairs locators/assertions in-place |
+
+Typical workflow for a TypeScript project:
+
+1. Run `npx zosma-qa init` and keep the generated `tests/seed.spec.ts`.
+2. Customise the seed to represent your real starting state (logged-in page, fixtures, etc.).
+3. In your AI tool, use prompts like:
+
+   - `Use the planner agent. Seed: tests/seed.spec.ts. Generate a plan for the checkout flow.`
+   - `Use the generator agent with specs/checkout.md to create tests in tests/checkout/.`
+   - `Use the healer agent on tests/checkout/confirm-order.spec.ts to repair failing locators.`
+
+The example project under `examples/zosma-ai/` uses `tests/seed.spec.ts` in exactly this way.
+
 ---
 
 ## Writing Example Tests (examples/zosma-ai)

@@ -350,6 +350,7 @@ async function scaffoldTypeScript(
       agentSpinner.succeed(
         chalk.green(`Agent definitions written to .github/agents/  (loop: ${agentLoop})`),
       );
+      patchPlaywrightAgentPrompts(projectDir);
     } catch (_err) {
       agentSpinner.warn(
         chalk.yellow(
@@ -357,6 +358,38 @@ async function scaffoldTypeScript(
             `  npx playwright install && npx playwright init-agents --loop=${agentLoop}`,
         ),
       );
+    }
+  }
+}
+
+function patchPlaywrightAgentPrompts(projectDir: string): void {
+  const promptsDir = path.join(projectDir, '.opencode', 'prompts');
+  const marker = '<!-- zosma-qa-specs-dir -->';
+
+  if (!fs.existsSync(promptsDir)) return;
+
+  const plannerPath = path.join(promptsDir, 'playwright-test-planner.md');
+  if (fs.existsSync(plannerPath)) {
+    const current = fs.readFileSync(plannerPath, 'utf8');
+    if (!current.includes(marker)) {
+      const note =
+        `\n\n${marker}\n` +
+        'When you call `planner_save_plan` in this repository, always save the plan into the existing `specs/` directory.\n' +
+        '- Use paths like `specs/checkout.plan.md`, `specs/auth.plan.md`, etc.\n' +
+        '- Do not create sibling folders like `spec/` or `plans/` when `specs/` already exists.\n' +
+        '- Assume `specs/` was created by `npx zosma-qa init` and reuse it.\n';
+      fs.writeFileSync(plannerPath, `${current.trimEnd()}${note}\n`, 'utf8');
+    }
+  }
+
+  const generatorPath = path.join(promptsDir, 'playwright-test-generator.md');
+  if (fs.existsSync(generatorPath)) {
+    const current = fs.readFileSync(generatorPath, 'utf8');
+    if (!current.includes(marker)) {
+      const note =
+        `\n\n${marker}\n` +
+        'Test plans are expected to live under the existing `specs/` directory created by `npx zosma-qa init`.\n';
+      fs.writeFileSync(generatorPath, `${current.trimEnd()}${note}\n`, 'utf8');
     }
   }
 }
