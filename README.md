@@ -18,7 +18,8 @@ zosma-qa is a unified QA framework that gives you production-ready test infrastr
 |---|---|---|
 | **Web (E2E & Component)** | Playwright | Available |
 | **Mobile (iOS & Android)** | Appium + WebdriverIO | Available |
-| **Load & Performance** | k6 / Artillery | Planned |
+| **Load & Performance** | k6 | Available |
+| **Load & Performance** | Artillery | Planned |
 | **REST API** | Supertest / Pactum | Planned |
 | **Accessibility** | axe-core + Playwright | Planned |
 | **Visual Regression** | Percy / Chromatic | Planned |
@@ -42,6 +43,7 @@ zosma-qa is a unified QA framework that gives you production-ready test infrastr
 | [`@zosmaai/zosma-qa-playwright`](packages/playwright/) | [![npm](https://img.shields.io/npm/v/@zosmaai/zosma-qa-playwright)](https://www.npmjs.com/package/@zosmaai/zosma-qa-playwright) | Playwright runner and base config |
 | [`@zosmaai/zosma-qa-cli`](packages/cli/) | [![npm](https://img.shields.io/npm/v/@zosmaai/zosma-qa-cli)](https://www.npmjs.com/package/@zosmaai/zosma-qa-cli) | Interactive CLI with prompts |
 | [`@zosmaai/zosma-qa-appium`](packages/appium/) | *Publishing with next release* | Appium mobile testing runner |
+| [`@zosmaai/zosma-qa-k6`](packages/k6/) | *Publishing with next release* | k6 load testing runner |
 
 ---
 
@@ -139,9 +141,30 @@ zosma.config.ts      ← plugins: ['pytest']
 
 ---
 
-### Load Testing (k6 / Artillery) — Planned
+### Load Testing (k6)
 
-Load testing support via k6 and Artillery is on the roadmap. See [Load Testing](docs/GETTING_STARTED_LOAD_TESTING.md) for status and planned features.
+```bash
+npm install -D @zosmaai/zosma-qa-k6
+```
+
+```typescript
+// zosma.config.ts
+import { defineConfig } from '@zosmaai/zosma-qa-core';
+
+export default defineConfig({
+  plugins: ['k6'],
+  testDir: './k6',
+  baseURL: 'http://localhost:3000',
+});
+```
+
+Write k6 scripts in `./k6/` (e.g. `smoke.k6.js`) or let the runner auto-generate them from endpoint configs.
+
+```bash
+npx zosma-qa run
+```
+
+See the full guide: [Getting Started with Load Testing](docs/GETTING_STARTED_LOAD_TESTING.md)
 
 ---
 
@@ -281,6 +304,7 @@ zosma-qa/
 │   ├── core/          @zosmaai/zosma-qa-core        — types, config, plugin interface
 │   ├── playwright/    @zosmaai/zosma-qa-playwright   — Playwright runner + base config
 │   ├── appium/        @zosmaai/zosma-qa-appium       — Appium mobile runner + test helpers
+│   ├── k6/            @zosmaai/zosma-qa-k6           — k6 load testing runner
 │   ├── cli/           @zosmaai/zosma-qa-cli          — interactive CLI
 │   └── zosma-qa/      zosma-qa                       — CLI entry point wrapper
 ├── templates/
