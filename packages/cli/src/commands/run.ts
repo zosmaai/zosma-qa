@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { Browser, TestResult } from '@zosmaai/zosma-qa-core';
 import { loadConfig } from '@zosmaai/zosma-qa-core';
+import { K6Runner } from '@zosmaai/zosma-qa-k6';
 import chalk from 'chalk';
 
 export interface RunOptions {
@@ -16,24 +17,58 @@ export interface RunOptions {
 }
 
 /**
- * `zosma-qa run` — detects the active runner from zosma.config and delegates
- * to the appropriate process:
+ * `zosma-qa run` — detects the active runner(s) from zosma.config and delegates
+ * to the appropriate process(es):
  *   - plugins: ['appium']     → AppiumRunner (WebdriverIO-based)
  *   - plugins: ['pytest']     → `uv run pytest` (if uv.lock present) or `python -m pytest`
  *   - plugins: ['playwright'] → `npx playwright test` (default)
+ *   - plugins: ['k6']         → k6 load tests
+ *
+ * Multiple plugins run sequentially.
  */
 export async function runTests(options: RunOptions = {}): Promise<void> {
   const cwd = process.cwd();
   const config = await loadConfig(cwd);
-  const isAppium = config.plugins.includes('appium');
-  const isPython = config.plugins.includes('pytest');
 
-  if (isAppium) {
-    await runAppium(config.testDir ?? './tests', config.baseURL, config.browsers ?? [], cwd);
-  } else if (isPython) {
-    await runPytest(options, config.testDir ?? './tests', cwd);
-  } else {
-    await runPlaywright(options, cwd);
+  for (const plugin of config.plugins) {
+    if (plugin === 'appium') {
+      await runAppium(config.testDir ?? './tests', config.baseURL, config.browsers ?? [], cwd);
+    } else if (plugin === 'pytest') {
+      await runPytest(options, config.testDir ?? './tests', cwd);
+    } else if (plugin === 'k6') {
+      await runK6Plugin(options, config, cwd);
+    } else {
+      await runPlaywright(options, cwd);
+    }
+  }
+}
+
+async function runK6Plugin(
+  _options: RunOptions,
+  config: { testDir: string; baseURL?: string },
+  _cwd: string,
+): Promise<void> {
+  console.log('');
+  console.log(
+    chalk.bold.cyan('  zosma-qa') + chalk.dim('  running: ') + chalk.white('k6 load tests'),
+  );
+  console.log('');
+
+  const runner = new K6Runner();
+  const results = await runner.run({
+    testDir: config.testDir,
+    baseURL: config.baseURL,
+    browsers: [],
+    reporters: [],
+    ci: false,
+  });
+
+  const failed = results.filter((r) => r.status === 'failed');
+  if (failed.length > 0) {
+    for (const r of failed) {
+      console.log(chalk.red(`  ✗ ${r.name}`) + (r.error ? chalk.dim(` — ${r.error}`) : ''));
+    }
+    process.exit(1);
   }
 }
 

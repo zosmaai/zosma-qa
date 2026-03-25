@@ -1,6 +1,8 @@
 import { Command } from 'commander';
 import { initAgents } from './commands/agents';
 import { runInit } from './commands/init';
+import { initK6, runK6 } from './commands/k6';
+import { initK6Agents } from './commands/k6-agents';
 import { openReport } from './commands/report';
 import { runTests } from './commands/run';
 
@@ -46,6 +48,39 @@ agentsCmd
   .option('--loop <loop>', 'AI loop to use: opencode | claude | vscode')
   .action(async (options) => {
     await initAgents(options.loop);
+  });
+
+// ─── k6 ──────────────────────────────────────────────────────────────────────
+
+const k6Cmd = program.command('k6').description('Manage k6 load tests');
+
+k6Cmd
+  .command('run')
+  .description('Run k6 load tests')
+  .option('--type <type>', 'Test type: load | stress | spike | soak')
+  .option('--vus <n>', 'Number of virtual users')
+  .option('--duration <duration>', 'Test duration (e.g. 30s, 5m)')
+  .option('--script <path>', 'Run a specific k6 script')
+  .option('--base-url <url>', 'Override base URL')
+  .action(async (options) => {
+    await runK6(options);
+  });
+
+k6Cmd
+  .command('init')
+  .description('Scaffold k6 test structure with example script and config')
+  .action(async () => {
+    await initK6();
+  });
+
+const k6AgentsCmd = k6Cmd.command('agents').description('Manage k6 AI agent definitions');
+
+k6AgentsCmd
+  .command('init')
+  .description('Generate k6 AI agent definitions for your AI coding tool')
+  .option('--loop <loop>', 'AI loop to use: opencode | claude | vscode')
+  .action(async (options) => {
+    await initK6Agents(options.loop);
   });
 
 // ─── report ───────────────────────────────────────────────────────────────────

@@ -10,6 +10,7 @@ zosma-qa/
 │   ├── core/          — plugin interface, config system, test discovery
 │   ├── playwright/    — Playwright runner and base config (web testing)
 │   ├── appium/        — Appium runner, test helpers, device management (mobile testing)
+│   ├── k6/            — k6 load testing runner, script discovery, templates
 │   ├── cli/           — interactive CLI (`npx zosma-qa`)
 │   └── zosma-qa/      — CLI entry point wrapper
 ├── templates/         — scaffold content for `npx zosma-qa init`
@@ -32,6 +33,10 @@ zosma-qa/
 @zosmaai/zosma-qa-appium
   └── @zosmaai/zosma-qa-core
   (peer: appium >=2.0.0)
+
+@zosmaai/zosma-qa-k6
+  └── @zosmaai/zosma-qa-core
+  (peer: k6 CLI binary)
 
 zosma-qa (entry point wrapper)
   └── @zosmaai/zosma-qa-cli
@@ -125,6 +130,30 @@ video: retain-on-failure
 
 ---
 
+## packages/k6
+
+**Purpose:** k6 load testing runner plugin. Wraps the k6 CLI with auto-discovery, script generation, and result parsing.
+
+**Key modules:**
+
+| Module | Description |
+|---|---|
+| `config.ts` | `defineK6Config()` and `loadK6Config()` — config system with sensible defaults |
+| `discovery.ts` | `findK6Scripts()` — recursive `*.k6.js` file discovery |
+| `executor.ts` | `executeK6()` — spawns k6 binary, captures stdout/stderr, reads JSON summary |
+| `parser.ts` | `parseK6Summary()` and `toTestResults()` — extracts structured metrics from k6 output |
+| `runner.ts` | `K6Runner` — implements `ZosmaPlugin`, orchestrates the full pipeline |
+| `templates/` | Script generators for load, stress, spike, and soak test profiles |
+
+**Design decisions:**
+- k6 binary is a peer dependency — users install their own version
+- Each `*.k6.js` script runs as an independent k6 execution
+- Results are normalized to `TestResult[]` for unified reporting
+- When no scripts exist but `endpoints` are configured, scripts are auto-generated from templates
+- Default thresholds: p(95)<500ms response time, <1% error rate
+
+---
+
 ## packages/cli
 
 **Purpose:** Developer-facing UX layer. All commands delegate to underlying tools — the CLI adds prompts, colour, and discoverability, not functionality.
@@ -186,7 +215,10 @@ The `init` command scaffolds this structure and optionally runs `playwright init
 - `*.appium.ts`, `*.appium.js`
 - `*.appium.py`
 
-Ignored directories: `node_modules`, `dist`, `.git`, `.playwright`, `playwright-report`, `test-results`.
+`@zosmaai/zosma-qa-k6`'s `findK6Scripts()` discovers load test scripts matching:
+- `*.k6.js`
+
+Ignored directories: `node_modules`, `dist`, `.git`, `.playwright`, `playwright-report`, `test-results`, `k6-results`.
 
 ---
 
@@ -198,16 +230,16 @@ Ignored directories: `node_modules`, `dist`, `.git`, `.playwright`, `playwright-
 4. Add the runner name to `zosma.config.ts`'s `plugins` array
 5. The CLI's `run` command will pick it up
 
-See `packages/appium/` for a complete reference implementation. Here's a minimal skeleton:
+See `packages/appium/` or `packages/k6/` for complete reference implementations. Here's a minimal skeleton:
 
 ```typescript
 import type { ZosmaPlugin, RunnerConfig, TestResult } from '@zosmaai/zosma-qa-core';
 
-export class K6Runner implements ZosmaPlugin {
-  readonly name = 'k6';
+export class MyRunner implements ZosmaPlugin {
+  readonly name = 'my-runner';
 
   async run(config: RunnerConfig): Promise<TestResult[]> {
-    // spawn k6 run with config
+    // spawn your runner and return normalized results
   }
 }
 ```

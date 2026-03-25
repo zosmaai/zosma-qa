@@ -1,34 +1,28 @@
 {
-  "name": "@zosmaai/zosma-qa-cli",
+  "name": "@zosmaai/zosma-qa-k6",
   "version": "0.0.1",
-  "description": "CLI for zosma-qa — zero-config QA platform",
+  "description": "k6 load testing runner plugin for zosma-qa",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/zosmaai/zosma-qa.git",
-    "directory": "packages/cli"
+    "directory": "packages/k6"
   },
   "homepage": "https://github.com/zosmaai/zosma-qa#readme",
   "bugs": {
     "url": "https://github.com/zosmaai/zosma-qa/issues"
   },
   "keywords": [
-    "playwright",
-    "testing",
+    "k6",
+    "load-testing",
+    "performance",
     "qa",
-    "e2e",
-    "cli",
-    "zero-config",
-    "ai-agents"
+    "zero-config"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "bin": {
-    "zosma-qa": "bin/zosma-qa.js"
-  },
   "files": [
-    "dist",
-    "bin"
+    "dist"
   ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
@@ -36,14 +30,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@zosmaai/zosma-qa-appium": "workspace:*",
-    "@zosmaai/zosma-qa-core": "workspace:*",
-    "@zosmaai/zosma-qa-k6": "workspace:*",
-    "@zosmaai/zosma-qa-playwright": "workspace:*",
-    "@inquirer/prompts": "^7.0.0",
-    "chalk": "^5.3.0",
-    "commander": "^12.1.0",
-    "ora": "^8.1.1"
+    "@zosmaai/zosma-qa-core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

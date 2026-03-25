@@ -1,94 +1,142 @@
-# Getting Started with Load Testing (k6 / Artillery)
+# Getting Started with Load Testing
 
-> **Status: Planned** — Load testing support is on the zosma-qa roadmap but not yet implemented.
+## k6
 
----
+zosma-qa supports load and performance testing via [k6](https://k6.io/) through the `@zosmaai/zosma-qa-k6` package.
 
-## What's Coming
+### Prerequisites
 
-zosma-qa will support load and performance testing through two popular tools:
+- [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/) installed on your machine
+- A zosma-qa project (or run `npx zosma-qa init`)
 
-| Runner | Package | Use Case |
-|---|---|---|
-| **k6** | `@zosmaai/zosma-qa-k6` | Developer-centric load testing with JavaScript |
-| **Artillery** | `@zosmaai/zosma-qa-artillery` | YAML-first load testing with rich scenarios |
+### Installation
 
-Both will follow the same plugin pattern as the Playwright and Appium runners — implement `ZosmaPlugin`, configure in `zosma.config.ts`, run with `npx zosma-qa run`.
+```bash
+npm install -D @zosmaai/zosma-qa-k6
+```
 
----
+### Configuration
 
-## Planned Features
-
-### k6 Integration
-
-- Write load tests in JavaScript/TypeScript
-- Configure via `zosma.config.ts` with `plugins: ['k6']`
-- Run with `npx zosma-qa run` (dispatches to `k6 run`)
-- Results aggregated into the unified report dashboard
+Add `k6` to your plugins in `zosma.config.ts`:
 
 ```typescript
-// Example: future k6 test
-// tests/load/homepage.k6.ts
+// zosma.config.ts
+import { defineConfig } from '@zosmaai/zosma-qa-core';
+
+export default defineConfig({
+  plugins: ['k6'],
+  testDir: './k6',
+  baseURL: 'http://localhost:3000',
+});
+```
+
+Optionally create a `k6.config.ts` for k6-specific settings:
+
+```typescript
+// k6.config.ts
+import { defineK6Config } from '@zosmaai/zosma-qa-k6';
+
+export default defineK6Config({
+  baseURL: 'http://localhost:3000',
+  vus: 50,
+  duration: '2m',
+  testType: 'stress',
+  thresholds: [
+    { metric: 'http_req_duration', condition: 'p(95)<500' },
+    { metric: 'http_req_failed', condition: 'rate<0.01' },
+  ],
+});
+```
+
+If you skip `k6.config.ts`, sensible defaults are applied (10 VUs, 30s duration, p95<500ms threshold).
+
+### Writing tests
+
+Create k6 scripts in your `testDir` with the `.k6.js` extension:
+
+```javascript
+// k6/smoke.k6.js
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export const options = {
-  vus: 50,
+  vus: 10,
   duration: '30s',
 };
 
 export default function () {
-  const res = http.get('https://www.myapp.com');
+  const res = http.get('http://localhost:3000/api/health');
   check(res, { 'status is 200': (r) => r.status === 200 });
   sleep(1);
 }
 ```
 
-### Artillery Integration
+The runner auto-discovers all `*.k6.js` files in `testDir`.
 
-- YAML-based test scenarios
-- Configure via `zosma.config.ts` with `plugins: ['artillery']`
-- Run with `npx zosma-qa run` (dispatches to `artillery run`)
-- Support for HTTP, WebSocket, and Socket.IO protocols
+### Auto-generated scripts
 
-```yaml
-# Example: future Artillery test
-# tests/load/homepage.artillery.yml
-config:
-  target: "https://www.myapp.com"
-  phases:
-    - duration: 30
-      arrivalRate: 10
-scenarios:
-  - flow:
-      - get:
-          url: "/"
-          expect:
-            - statusCode: 200
+If no scripts exist but you have `endpoints` configured in `k6.config.ts`, the runner generates scripts automatically:
+
+```typescript
+defineK6Config({
+  baseURL: 'http://localhost:3000',
+  testType: 'load',
+  endpoints: [
+    { method: 'GET', path: '/api/users' },
+    { method: 'POST', path: '/api/orders', body: { item: 'widget' } },
+  ],
+});
+```
+
+### Test types
+
+| Type | Description |
+|---|---|
+| `load` | Constant VU load for a fixed duration (default) |
+| `stress` | Gradual ramp-up to find the breaking point |
+| `spike` | Sudden burst of traffic |
+| `soak` | Long-running stability test |
+
+Custom ramping stages override the test type preset:
+
+```typescript
+defineK6Config({
+  stages: [
+    { duration: '1m', target: 20 },
+    { duration: '3m', target: 20 },
+    { duration: '1m', target: 0 },
+  ],
+});
+```
+
+### Running
+
+```bash
+npx zosma-qa run
+```
+
+Results are saved to `./k6-results/` as JSON summaries. Failed thresholds cause a non-zero exit code.
+
+### Multi-plugin
+
+k6 works alongside other runners. For example, run E2E tests and load tests in sequence:
+
+```typescript
+export default defineConfig({
+  plugins: ['playwright', 'k6'],
+});
 ```
 
 ---
 
-## Roadmap
+## Artillery — Planned
 
-Load testing is part of **Phase 2** in the [zosma-qa Vision](VISION.md). The implementation order:
-
-1. k6 plugin (JavaScript-native, aligns with TypeScript ecosystem)
-2. Artillery plugin (YAML-first, broader protocol support)
-3. Unified reporting (load metrics alongside E2E and mobile test results)
+Artillery support is on the roadmap. See [Vision & Roadmap](VISION.md) for details.
 
 ---
 
-## Want to Contribute?
+## Reference
 
-If you're interested in building the k6 or Artillery plugin, see:
-
-- [Architecture](ARCHITECTURE.md) — how plugins work
-- [CONTRIBUTING.md](../CONTRIBUTING.md) — development setup and guidelines
-- The existing [`@zosmaai/zosma-qa-appium`](../packages/appium/) package as a reference for building a new runner plugin
-
----
-
-## Stay Updated
-
-Watch the [zosma-qa repository](https://github.com/zosmaai/zosma-qa) for updates on load testing support.
+- [k6 documentation](https://grafana.com/docs/k6/latest/)
+- [`@zosmaai/zosma-qa-k6` README](../packages/k6/README.md)
+- [Architecture](ARCHITECTURE.md)

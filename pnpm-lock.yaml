@@ -85,6 +85,9 @@ importers:
       '@zosmaai/zosma-qa-core':
         specifier: workspace:*
         version: link:../core
+      '@zosmaai/zosma-qa-k6':
+        specifier: workspace:*
+        version: link:../k6
       '@zosmaai/zosma-qa-playwright':
         specifier: workspace:*
         version: link:../playwright
@@ -106,6 +109,19 @@ importers:
         version: 5.9.3
 
   packages/core:
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.37
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  packages/k6:
+    dependencies:
+      '@zosmaai/zosma-qa-core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
