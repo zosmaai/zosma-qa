@@ -1,5 +1,7 @@
 import { Command } from 'commander';
 import { initAgents } from './commands/agents';
+import { initAppium, runAppium } from './commands/appium';
+import { initAppiumAgents } from './commands/appium-agents';
 import { runInit } from './commands/init';
 import { initK6, runK6 } from './commands/k6';
 import { initK6Agents } from './commands/k6-agents';
@@ -81,6 +83,42 @@ k6AgentsCmd
   .option('--loop <loop>', 'AI loop to use: opencode | claude | vscode')
   .action(async (options) => {
     await initK6Agents(options.loop);
+  });
+
+// ─── appium ──────────────────────────────────────────────────────────────────
+
+const appiumCmd = program.command('appium').description('Manage Appium mobile tests');
+
+appiumCmd
+  .command('run')
+  .description('Run Appium mobile tests')
+  .option('--platform <platform>', 'Target platform: iOS | Android | ReactNative')
+  .option('--device <device>', 'Device name or ID')
+  .option('--app <path>', 'Path to app binary (APK/IPA)')
+  .option('--port <n>', 'Appium server port')
+  .option('--verbose', 'Enable verbose logging')
+  .option('-g, --grep <pattern>', 'Only run tests matching this pattern')
+  .action(async (options) => {
+    await runAppium(options);
+  });
+
+appiumCmd
+  .command('init')
+  .description('Scaffold Appium test structure with example test and config')
+  .action(async () => {
+    await initAppium();
+  });
+
+const appiumAgentsCmd = appiumCmd
+  .command('agents')
+  .description('Manage Appium AI agent definitions');
+
+appiumAgentsCmd
+  .command('init')
+  .description('Generate Appium AI agent definitions for your AI coding tool')
+  .option('--loop <loop>', 'AI loop to use: opencode | claude | vscode')
+  .action(async (options) => {
+    await initAppiumAgents(options.loop);
   });
 
 // ─── report ───────────────────────────────────────────────────────────────────
