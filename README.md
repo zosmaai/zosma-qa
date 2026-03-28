@@ -42,8 +42,8 @@ zosma-qa is a unified QA framework that gives you production-ready test infrastr
 | [`@zosmaai/zosma-qa-core`](packages/core/) | [![npm](https://img.shields.io/npm/v/@zosmaai/zosma-qa-core)](https://www.npmjs.com/package/@zosmaai/zosma-qa-core) | Shared types, config loader, plugin interface |
 | [`@zosmaai/zosma-qa-playwright`](packages/playwright/) | [![npm](https://img.shields.io/npm/v/@zosmaai/zosma-qa-playwright)](https://www.npmjs.com/package/@zosmaai/zosma-qa-playwright) | Playwright runner and base config |
 | [`@zosmaai/zosma-qa-cli`](packages/cli/) | [![npm](https://img.shields.io/npm/v/@zosmaai/zosma-qa-cli)](https://www.npmjs.com/package/@zosmaai/zosma-qa-cli) | Interactive CLI with prompts |
-| [`@zosmaai/zosma-qa-appium`](packages/appium/) | *Publishing with next release* | Appium mobile testing runner |
-| [`@zosmaai/zosma-qa-k6`](packages/k6/) | *Publishing with next release* | k6 load testing runner |
+| [`@zosmaai/zosma-qa-appium`](packages/appium/) | [![npm](https://img.shields.io/npm/v/@zosmaai/zosma-qa-appium)](https://www.npmjs.com/package/@zosmaai/zosma-qa-appium) | Appium mobile testing runner |
+| [`@zosmaai/zosma-qa-k6`](packages/k6/) | [![npm](https://img.shields.io/npm/v/@zosmaai/zosma-qa-k6)](https://www.npmjs.com/package/@zosmaai/zosma-qa-k6) | k6 load testing runner |
 
 ---
 
